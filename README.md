@@ -1,78 +1,132 @@
-# cs2cpp
-A source to source compiler compiles C# to C++.
+cs2cpp
+======
 
-It enables you to code C++ with C# *productivity*, and run C# with C++ *performance*!
+This is a C\# -\> C++ source to source compiler.
 
-## Status Update (May 22, 2015)
- - Handled most common C# declarations, statements, expressions
- - Type model recognized almost everywhere
- - HelloWorld running on Windows (VC++ compiler)
+Code C++ with C\# *productivity*! Run C\# with C++ *performance*!
 
-## Next Update
- - Unit tests
- - Publish code in GitHub
+Status Update (June 7, 2015)
+----------------------------
 
-## Short Term Goals
- - Debug
- - Import C/C++ standard libraries
- - Import Boost library
- - Port to Linux & Mac OS
+-   Initial source code published: compiler, corelib, includes, and helloworld
+    sample
 
-## Secondary Goals
- - Support advanced C# features like yield, await, LINQ, etc.
- - Compile Roslyn source code
- - Compile MonoDevelop source code
- - TBD
+-   helloworld running on Windows (VC++/g++ compiler with -std=c++11)
 
-## Memory Management (to be continued)
-In short, its based on an improved reference counter algorithm in both compile time and runtime.
+Next Update
+-----------
 
-## Hello World
-C# code:
-```
-namespace Tests
+-   Unit tests
+
+-   Port to Linux & Mac OS
+
+-   Version 0.1 release
+
+Short Term Goals
+----------------
+
+-   Stabilization
+
+-   Import C/C++ standard libraries
+
+-   Import Boost library
+
+Secondary Goals
+---------------
+
+-   Support advanced C\# features like yield, await, LINQ, etc.
+
+-   Compile Roslyn source code
+
+-   Compile MonoDevelop source code
+
+-   TBD
+
+Memory Management (to be continued)
+-----------------------------------
+
+In short, its based on an improved reference counter algorithm in both compile
+time and runtime.
+
+Hello World
+-----------
+
+C\# code:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+namespace HappyCspp.Tests
 {
-    class Program
+    using std;
+
+    class TestMain
     {
         static int Main(string[] args)
         {
-            C.PrintF("Hello %s", "World!");
+            for (int i = 0; i < args.Length; i++)
+            {
+                StdIO.PrintF(args[i] += " ");
+            }
+
             return 0;
         }
     }
 }
-```
-Import C Standard Library:
-```
-using Std;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/// <summary>
-/// Imported C Standard Library.
-/// </summary>
-/// <remarks>
-/// No namespace.
-/// </remarks>
-[Imported, Alias("")]
-public static struct C
+Import some standard libraries:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+using System;
+
+namespace std
 {
-    [Alias("printf"), DefinedIn("cstdio")]
-    public static extern void PrintF(string format, params object[] args);
+    /// <summary>
+    /// C library to perform Input/Output operations.
+    /// </summary>
+    /// <remarks>
+    /// http://www.cplusplus.com/reference/cstdio/
+    /// </remarks>
+    [Imported, Alias(""), DefinedIn("cstdio")]
+    public struct StdIO
+    {
+        [Alias("printf", "wprintf")]
+        public static extern int PrintF(string format, params object[] args);
+
+        [Alias("getchar")]
+        public static extern int GetChar();
+    }
 }
-```
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Generated C++ code:
-```
-#include "Tests.Program.h"
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#include "tests.h"
 
-namespace Tests { 
+using namespace std;
 
-	int Program::Main(_sptr_<_array_<_string_>> args) {
-		printf("Hello %s", "World!");
-		return 0;
-	}
+namespace HappyCspp { namespace Tests {
+
+    int32_t TestMain::Main(_<sys::array<_<sys::string>>> args) {
+        for (int32_t i = 0; i < args->get_Length(); i++) {
+            std::printf(args.IndexOf<_<sys::string>>(i) += " ");
+        }
+        return 0;
+    }
+}}
+
+int main(int argc, char* argv[]) {
+    _<sys::array<_<sys::string>>> args = new_<sys::array<_<sys::string>>>(argc - 1);
+    for (int i = 1; i < argc; i++) {
+        args.IndexOf<_<sys::string>>(i - 1) = new_<sys::string>(argv[i]);
+    }
+    return HappyCspp::Tests::TestMain::Main(args);
 }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-int main(int argc, _char_** argv) {
-	return Tests::Program::Main(new _array_<_string_>(argc, argv));
-}
-```
+Hello World!
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests.exe Hello World!
+Hello World! 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
