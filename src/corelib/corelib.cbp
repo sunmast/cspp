@@ -17,7 +17,7 @@
 					<Add option="-std=c++11" />
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add directory="E:/github/cs2cpp/src/include" />
+					<Add directory="../include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">

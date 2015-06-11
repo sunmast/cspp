@@ -15,7 +15,16 @@ namespace HappyCspp.Compiler
             this.hWriter.WriteIndention();
             this.hWriter.Append(field.GetModifiers());
 
-            this.hWriter.Append(this.SyntaxVariableDeclaration(field.Declaration.Declaration, field.Variable, true, true, field.IsStatic));
+            bool isWeakRef = Util.IsAttributeDefined(field.Attributes, "WeakRef");
+            string declaration = this.SyntaxVariableDeclaration(field.Declaration.Declaration, field.Variable, true, true, field.IsStatic);
+
+            if (isWeakRef && !declaration.StartsWith("_<"))
+            {
+                // WeakRef attribute can only be applied to reference types
+                throw Util.NewSyntaxNotSupportedException(field.Declaration);
+            }
+
+            this.hWriter.Append(isWeakRef ? Consts.WeakPtr + declaration.Substring(1) : declaration);
             this.hWriter.AppendLine(";");
 
             if (field.Variable.Initializer != null && field.IsStatic)

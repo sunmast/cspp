@@ -282,9 +282,7 @@ namespace HappyCspp.Compiler
             {
                 throw Util.NewSyntaxNotSupportedException(forStatement.Initializers);
             }
-
-            StringBuilder variables = new StringBuilder();
-
+                
             foreach (var variable in forStatement.Declaration.Variables)
             {
 				TypeInfo t = this.semantic.GetTypeInfo(forStatement.Declaration.Type);

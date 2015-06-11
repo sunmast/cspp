@@ -36,7 +36,7 @@ namespace HappyCspp.Compiler
 
             for (int i = 0; i < nodesCompile.Count; i++)
             {
-                this.SourceFiles[i] = Path.Combine(dir, nodesCompile[i].Attributes["Include"].Value);
+                this.SourceFiles[i] = Path.Combine(dir, nodesCompile[i].Attributes["Include"].Value.Replace('\\', '/'));
             }
 
             this.DestinationFolder = Path.Combine(dir, "cpp");

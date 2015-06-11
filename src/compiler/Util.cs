@@ -90,12 +90,30 @@ namespace HappyCspp.Compiler
 			return null;
 		}
 
-        internal static bool IsAttributeDefined(ImmutableArray<AttributeData> attributes, string attributeName)
+
+        internal static bool IsAttributeDefined(IEnumerable<AttributeData> attributes, string attributeName)
         {
             foreach (var attr in attributes)
             {
                 if (attr.AttributeClass.Name == attributeName)
                     return true;
+            }
+
+            return false;
+        }
+
+        internal static bool IsAttributeDefined(IEnumerable<AttributeListSyntax> attributes, string attributeShortName)
+        {
+            foreach (var attrList in attributes)
+            {
+                foreach (var attr in attrList.Attributes)
+                {
+                    string name = attr.Name.ToString();
+                    if (name == attributeShortName || name == attributeShortName + "Attribute")
+                    {
+                        return true;
+                    }
+                }
             }
 
             return false;

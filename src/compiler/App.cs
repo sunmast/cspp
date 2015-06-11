@@ -143,9 +143,7 @@ namespace HappyCspp.Compiler
 
             foreach (var kvp in knownTypes)
             {
-                var typeModel = kvp.Value;
-
-                typeModel.Compiler = new CsWalker(knownTypes, typeModel);
+                kvp.Value.Compiler = new CsWalker(kvp.Value);
             }
 
             using (FileStream hFileStream = new FileStream(headersFile, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -190,10 +188,6 @@ namespace HappyCspp.Compiler
             }
 
             Console.WriteLine("Done!");
-
-            #if DEBUG
-            Console.ReadKey();
-            #endif
 
             return 0;
         }

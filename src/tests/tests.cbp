@@ -15,8 +15,8 @@
 					<Add option="-Weffc++" />
 					<Add option="-std=c++11" />
 					<Add option="-g" />
-					<Add directory="E:/github/cs2cpp/src/include" />
-					<Add directory="E:/github/cs2cpp/src/corelib/cpp" />
+					<Add directory="../include" />
+					<Add directory="../corelib/cpp" />
 				</Compiler>
 			</Target>
 			<Target title="Release">

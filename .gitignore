@@ -197,6 +197,7 @@ FakesAssemblies/
 
 # Code::Blocks IDE
 *.layout
+*.depend
 
 # MonoDevelop IDE
 *.userprefs

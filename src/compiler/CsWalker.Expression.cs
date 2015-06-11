@@ -447,7 +447,7 @@ namespace HappyCspp.Compiler
 
             if (!(op == "==" || op == "!=") || (leftType.Type.IsValueType && rightType.Type.IsValueType))
             {
-                // The operator is not ++ or !=, or both side are value type
+                // The operator is not == or !=, or both side are value type
                 goto DEFAULT_RETURN;
             }
 

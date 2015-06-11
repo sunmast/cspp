@@ -88,6 +88,13 @@
             this.HeaderFile = headerFile;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Field, Inherited = false)]
+    [Imported]
+    public sealed class WeakRefAttribute : Attribute
+    {
+
+    }
 }
 
 #region System.Reflection

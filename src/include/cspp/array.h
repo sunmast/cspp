@@ -37,6 +37,12 @@ public:
         }
     }
 
+    ~array()
+    {
+        // TODO: delete elements if T is ref type (sptr)
+        //printf("~array called \n");
+    }
+
     inline size_t get_Length()
     {
         return length;

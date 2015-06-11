@@ -12,7 +12,6 @@ namespace HappyCspp.Compiler
 {
     partial class CsWalker
     {
-        private SortedDictionary<string, TypeModel> knownTypes;
         private CodeWriter hWriter, cppWriter, tempWriter;
         private StringBuilder tempStringBuilder = new StringBuilder();
         private CodeWriter.Depth depth;
@@ -26,9 +25,8 @@ namespace HappyCspp.Compiler
 
         private MemberMethodModel mainMethod;
 
-        public CsWalker(SortedDictionary<string, TypeModel> knownTypes, TypeModel typeModel)
+        public CsWalker(TypeModel typeModel)
         {
-            this.knownTypes = knownTypes;
             this.typeModel = typeModel;
 			this.semantic = typeModel.SemanticModel;
         }

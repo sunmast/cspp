@@ -30,8 +30,9 @@ namespace HappyCspp.Compiler
 
         public static string SharedPtr = "_";
 
-        public static string WeakPtr = "wptr_";
-        public static string FuncPtr = "fptr_";
+        public static string WeakPtr = "sys::wptr";
+
+        public static string FuncPtr = "sys::fptr";
 
         public static string Array = "sys::array";
 

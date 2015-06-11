@@ -3,17 +3,18 @@
 #include "../cspp.h"
 
 // Always use calloc to zero memory to keep semantics same as C#
-// Always allocate additional 4 bytes for the storage of the ref counter
-template <typename T> inline void* AllocateObject()
+// Always allocate additional 8 bytes for the storage of ref counters
+template <typename T> inline T* AllocateObject()
 {
-    void* p = calloc(1, sizeof(T) + sizeof(uint32_t));
+    void* p = calloc(1, sizeof(uint64_t) + sizeof(T));
 
     if(!p)
     {
         // throw new OutOfMemoryException();
     }
 
-    return p;
+    // The memory layout will be: [strong ref counter: 4 bytes][weak ref counter: 4 bytes][object: sizeof(T) bytes]
+    return (T*)((uint64_t*)p + 1);
 }
 
 // Support up to 10 parameters for constructors
