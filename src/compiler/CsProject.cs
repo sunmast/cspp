@@ -14,6 +14,8 @@ namespace HappyCspp.Compiler
 
         public string DestinationFolder { get; private set; }
 
+        public string DefaultNamespace { get; private set; }
+
         public CsProject(string projectFile)
         {
             XmlDocument doc = new XmlDocument();
@@ -40,6 +42,8 @@ namespace HappyCspp.Compiler
             }
 
             this.DestinationFolder = Path.Combine(dir, "cpp");
+
+            this.DefaultNamespace = doc.SelectSingleNode("//msbuild:RootNamespace", nsmgr).InnerText;
         }
     }
 }

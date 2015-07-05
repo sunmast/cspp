@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1FC482DD-3476-43A1-B863-DC9B033402BE}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>corelib</RootNamespace>
+    <RootNamespace>System</RootNamespace>
     <AssemblyName>corelib</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
@@ -31,7 +31,6 @@
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="String.cs" />
     <Compile Include="Attributes.cs" />
     <Compile Include="Array.cs" />
@@ -40,6 +39,7 @@
     <Compile Include="std\CLib\StdIO.cs" />
     <Compile Include="std\Containers\Vector.cs" />
     <Compile Include="SizeT.cs" />
+    <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

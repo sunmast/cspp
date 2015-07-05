@@ -17,8 +17,9 @@ namespace HappyCspp.Compiler
         private NamespaceDeclarationSyntax nsDeclaration;
 
         private string nsName, fullName, alias, builtInTypeName;
+        private string[] nsNameParts;
 
-		public SemanticModel SemanticModel{ get; private set; }
+        public SemanticModel SemanticModel{ get; private set; }
 
         public string Name { get; protected set; }
 
@@ -32,7 +33,7 @@ namespace HappyCspp.Compiler
 
         public SyntaxList<TypeParameterConstraintClauseSyntax> GenericConstraints { get; set; }
 
-		public ISymbol[] TypeArgs { get; set; }
+        public ISymbol[] TypeArgs { get; set; }
 
         public MemberModel[] Members { get; protected set; }
 
@@ -52,6 +53,24 @@ namespace HappyCspp.Compiler
                 }
 
                 return this.nsName;
+            }
+        }
+
+        public string[] NsNameParts
+        {
+            get
+            {
+                if (this.NsName == null)
+                {
+                    return null;
+                }
+
+                if (this.nsNameParts == null)
+                {
+                    this.nsNameParts = this.NsName.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
+                }
+
+                return this.nsNameParts;
             }
         }
 
@@ -107,9 +126,9 @@ namespace HappyCspp.Compiler
             }
         }
 
-		public TypeModel(SemanticModel semanticModel)
+        public TypeModel(SemanticModel semanticModel)
         {
-			this.SemanticModel = semanticModel;
+            this.SemanticModel = semanticModel;
 
             this.UsingDirectives = new List<UsingDirectiveSyntax>();
             this.AutoProperties = new Dictionary<string, TypeSyntax>();
@@ -123,7 +142,7 @@ namespace HappyCspp.Compiler
             //this.ClassDeclaration.TypeParameterList.AddParameters
         }
 
-		public static TypeModel Create(NamespaceDeclarationSyntax ns, SyntaxNode node, List<UsingDirectiveSyntax> usings, SemanticModel semanticModel)
+        public static TypeModel Create(NamespaceDeclarationSyntax ns, SyntaxNode node, List<UsingDirectiveSyntax> usings, SemanticModel semanticModel)
         {
             TypeModel model;
 
@@ -131,37 +150,37 @@ namespace HappyCspp.Compiler
             {
                 var classDeclaraion = node as ClassDeclarationSyntax;
 
-				model = new ClassModel(semanticModel)
+                model = new ClassModel(semanticModel)
                 {
                     Name = classDeclaraion.Identifier.Text,
                     ClassDeclaration = classDeclaraion,
                     Attributes = classDeclaraion.AttributeLists,
                     GenericArgs = classDeclaraion.TypeParameterList,
                     GenericConstraints = classDeclaraion.ConstraintClauses,
-				};
+                };
 
-				model.Members = MemberModel.GetSortedMembers (model, classDeclaraion.Members);
+                model.Members = MemberModel.GetSortedMembers(model, classDeclaraion.Members);
             }
             else if (node is StructDeclarationSyntax)
             {
                 var structDeclaration = node as StructDeclarationSyntax;
 
-				model = new StructModel(semanticModel)
+                model = new StructModel(semanticModel)
                 {
                     Name = structDeclaration.Identifier.Text,
                     StructDeclaration = structDeclaration,
                     Attributes = structDeclaration.AttributeLists,
                     GenericArgs = structDeclaration.TypeParameterList,
                     GenericConstraints = structDeclaration.ConstraintClauses,
-				};
+                };
 
-				model.Members = MemberModel.GetSortedMembers (model, structDeclaration.Members);
+                model.Members = MemberModel.GetSortedMembers(model, structDeclaration.Members);
             }
             else if (node is InterfaceDeclarationSyntax)
             {
                 var interfaceDeclaration = node as InterfaceDeclarationSyntax;
 
-				model = new InterfaceModel(semanticModel)
+                model = new InterfaceModel(semanticModel)
                 {
                     Name = interfaceDeclaration.Identifier.Text,
                     InterfaceDeclaration = interfaceDeclaration,
@@ -170,13 +189,13 @@ namespace HappyCspp.Compiler
                     GenericConstraints = interfaceDeclaration.ConstraintClauses,
                 };
 
-				model.Members = MemberModel.GetSortedMembers (model, interfaceDeclaration.Members);
+                model.Members = MemberModel.GetSortedMembers(model, interfaceDeclaration.Members);
             }
             else if (node is DelegateDeclarationSyntax)
             {
                 var delegateDeclaration = node as DelegateDeclarationSyntax;
 
-				model = new DelegateModel(semanticModel)
+                model = new DelegateModel(semanticModel)
                 {
                     Name = delegateDeclaration.Identifier.Text,
                     DelegateDeclaration = delegateDeclaration,
@@ -189,7 +208,7 @@ namespace HappyCspp.Compiler
             {
                 var enumDeclaration = node as EnumDeclarationSyntax;
 
-				model = new EnumModel(semanticModel)
+                model = new EnumModel(semanticModel)
                 {
                     Name = enumDeclaration.Identifier.Text,
                     EnumDeclaration = enumDeclaration,
@@ -251,7 +270,8 @@ namespace HappyCspp.Compiler
         //    this.ClassDeclaration.AddBaseListTypes(partialClassModel.ClassDeclaration.BaseList.Types.ToArray());
         //}
 
-		public ClassModel(SemanticModel semanticModel) : base (semanticModel)
+        public ClassModel(SemanticModel semanticModel)
+            : base(semanticModel)
         {
             this.IsValueType = false;
         }
@@ -262,7 +282,8 @@ namespace HappyCspp.Compiler
     {
         public StructDeclarationSyntax StructDeclaration { get; set; }
 
-		public StructModel(SemanticModel semanticModel) : base (semanticModel)
+        public StructModel(SemanticModel semanticModel)
+            : base(semanticModel)
         {
             this.IsValueType = true;
         }
@@ -273,7 +294,8 @@ namespace HappyCspp.Compiler
     {
         public InterfaceDeclarationSyntax InterfaceDeclaration { get; set; }
 
-		public InterfaceModel(SemanticModel semanticModel) : base (semanticModel)
+        public InterfaceModel(SemanticModel semanticModel)
+            : base(semanticModel)
         {
             this.IsValueType = false;
         }
@@ -284,7 +306,8 @@ namespace HappyCspp.Compiler
     {
         public EnumDeclarationSyntax EnumDeclaration { get; set; }
 
-		public EnumModel(SemanticModel semanticModel) : base (semanticModel)
+        public EnumModel(SemanticModel semanticModel)
+            : base(semanticModel)
         {
             this.IsValueType = true;
         }
@@ -295,7 +318,8 @@ namespace HappyCspp.Compiler
     {
         public DelegateDeclarationSyntax DelegateDeclaration { get; set; }
 
-		public DelegateModel(SemanticModel semanticModel) : base (semanticModel)
+        public DelegateModel(SemanticModel semanticModel)
+            : base(semanticModel)
         {
             this.IsValueType = false;
         }

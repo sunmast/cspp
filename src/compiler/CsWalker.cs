@@ -15,20 +15,20 @@ namespace HappyCspp.Compiler
         private CodeWriter hWriter, cppWriter, tempWriter;
         private StringBuilder tempStringBuilder = new StringBuilder();
         private CodeWriter.Depth depth;
-		private TypeModel typeModel;
+        private TypeModel typeModel;
         private MemberModel memberModel;
 
         private TypeInfo dummyType;
         private int memberAccessDepth = 0;
 
-		private SemanticModel semantic;
+        private SemanticModel semantic;
 
         private MemberMethodModel mainMethod;
 
         public CsWalker(TypeModel typeModel)
         {
             this.typeModel = typeModel;
-			this.semantic = typeModel.SemanticModel;
+            this.semantic = typeModel.SemanticModel;
         }
 
         public void Compile(CodeWriter hWriter, CodeWriter cppWriter, CodeWriter.Depth depth)
@@ -47,7 +47,9 @@ namespace HappyCspp.Compiler
 
                 string cppUsing = this.SyntaxName(nsImport.Name);
 
-                if (cppUsing == "Std") continue;
+                // std and sys namespaces are always expanded in code
+                if (cppUsing == "std" || cppUsing == "sys")
+                    continue;
 
                 // Only declare usings in cpp files to maintain code readability
                 if (nsImport.Alias == null)
@@ -60,21 +62,18 @@ namespace HappyCspp.Compiler
                 }
             }
 
-            string[] ns = null;
-            if (typeModel.NsName != null)
+            if (typeModel.UsingDirectives.Count > 0)
             {
-                this.hWriter.NewLine();
                 this.cppWriter.NewLine();
-
-                ns = typeModel.NsName.Split(new string[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string n in ns)
+            }
+                
+            if (this.typeModel.NsNameParts != null)
+            {
+                foreach (string n in this.typeModel.NsNameParts)
                 {
-                    this.hWriter.Write("namespace {0} {{ ", n);
                     this.cppWriter.Write("namespace {0} {{ ", n);
                 }
 
-                this.hWriter.NewLine();
                 this.cppWriter.NewLine();
             }
 
@@ -99,10 +98,9 @@ namespace HappyCspp.Compiler
                 this.CompileDelegateDeclaration((typeModel as DelegateModel).DelegateDeclaration);
             }
 
-            if (ns != null)
+            if (this.typeModel.NsNameParts != null)
             {
-                this.hWriter.WriteLine(new string('}', ns.Length * 2));
-                this.cppWriter.WriteLine(new string('}', ns.Length * 2));
+                this.cppWriter.WriteLine(new string('}', this.typeModel.NsNameParts.Length * 2));
             }
 
             if (this.mainMethod != null)
@@ -224,6 +222,7 @@ namespace HappyCspp.Compiler
 
             this.hWriter.NewLine();
             this.hWriter.WriteLine("public:"); // members in C# interface are all public
+            this.hWriter.NewLine();
 
             this.depth++;
 
@@ -247,7 +246,7 @@ namespace HappyCspp.Compiler
 
             this.hWriter.WriteLine(
                 "{0} (*{1}){2};",
-				this.WrapTypeName(this.semantic.GetTypeInfo(delegateDeclaration.ReturnType)),
+                this.WrapTypeName(this.semantic.GetTypeInfo(delegateDeclaration.ReturnType)),
                 delegateDeclaration.Identifier.Text,
                 this.SyntaxParameterList(delegateDeclaration.ParameterList, true));
         }
@@ -256,7 +255,7 @@ namespace HappyCspp.Compiler
         {
             string enumName = enumDeclaration.Identifier.Text;
 
-            this.hWriter.WriteLine("enum {0} {{", enumName);
+            this.hWriter.WriteLine("struct {0} {{", enumName);
             this.depth++;
 
             foreach (var member in enumDeclaration.Members)
@@ -275,17 +274,17 @@ namespace HappyCspp.Compiler
             this.hWriter.WriteLine("}};");
         }
 
-		private string WrapTypeName(TypeSyntax typeSyntax, IEnumerable<UsingDirectiveSyntax> usings = null)
-		{
-			if (typeSyntax == null)
-				return null;
+        private string WrapTypeName(TypeSyntax typeSyntax, IEnumerable<UsingDirectiveSyntax> usings = null)
+        {
+            if (typeSyntax == null)
+                return null;
 			
-			TypeInfo typeInfo = this.semantic.GetTypeInfo (typeSyntax);
-			return this.WrapTypeName (typeInfo, usings);
-		}
+            TypeInfo typeInfo = this.semantic.GetTypeInfo(typeSyntax);
+            return this.WrapTypeName(typeInfo, usings);
+        }
 
-		private string WrapTypeName(TypeInfo typeInfo, IEnumerable<UsingDirectiveSyntax> usings = null)
-		{
+        private string WrapTypeName(TypeInfo typeInfo, IEnumerable<UsingDirectiveSyntax> usings = null)
+        {
             // Wrap ref type with _<>
             // Change type name to its alias
 
@@ -413,7 +412,8 @@ namespace HappyCspp.Compiler
                     j = i + 1;
                 }
 
-                if (c == '>') depth--;
+                if (c == '>')
+                    depth--;
             }
 
             string typeKey = fullName.Substring(0, index) + "`" + list.Count;

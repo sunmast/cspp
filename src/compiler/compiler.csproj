@@ -69,6 +69,7 @@
     <Compile Include="Util.cs" />
     <Compile Include="VariableModel.cs" />
     <Compile Include="CsProject.cs" />
+    <Compile Include="CbProject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿namespace HappyCspp.Tests
 {
     using std;
+    using System;
 
     class TestMain
     {

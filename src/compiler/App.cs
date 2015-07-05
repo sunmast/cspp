@@ -31,11 +31,23 @@ namespace HappyCspp.Compiler
                 return 1;
             }
 
-            if (!File.Exists(args[0]))
+            string csprojFile = args[0];
+
+            if (!File.Exists(csprojFile))
             {
                 Console.WriteLine("Unable to load the C# project file '{0}'!", args[0]);
                 PrintUsage();
                 return 1;
+            }
+
+            string cbpFile = Path.ChangeExtension(csprojFile, ".cbp");
+            if (File.Exists(cbpFile))
+            {
+                Console.WriteLine("Code::Blocks C++ project file '{0}' found", cbpFile);
+            }
+            else
+            {
+                cbpFile = null;
             }
 
             if (args.Length > 1)
@@ -139,14 +151,17 @@ namespace HappyCspp.Compiler
                 }
             }
 
-            string headersFile = Path.Combine(csproj.DestinationFolder, csproj.Name + ".h");
+            string headersFile = csproj.Name + ".h";
 
             foreach (var kvp in knownTypes)
             {
                 kvp.Value.Compiler = new CsWalker(kvp.Value);
             }
 
-            using (FileStream hFileStream = new FileStream(headersFile, FileMode.Create, FileAccess.Write, FileShare.None))
+            List<string> generatedFiles = new List<string>();
+            generatedFiles.Add(headersFile);
+
+            using (FileStream hFileStream = new FileStream(Path.Combine(csproj.DestinationFolder, headersFile), FileMode.Create, FileAccess.Write, FileShare.None))
             using (StreamWriter hWriter = new StreamWriter(hFileStream, Encoding.UTF8))
             {
                 hWriter.WriteLine("#pragma once");
@@ -159,23 +174,118 @@ namespace HappyCspp.Compiler
                     hWriter.WriteLine("#include <{0}.h>", Path.GetFileNameWithoutExtension(lib));
                 }
 
+                hWriter.WriteLine();
+
+                int i = 0, j = 0;
+                string lastNs = null;
+
+                // Forward declare all classes in all headers file
                 foreach (var kvp in knownTypes)
                 {
-                    var typeModel = kvp.Value;
-                    string fileName = typeModel.FullName.Replace("::", ".");
+                    TypeModel typeModel = kvp.Value;
 
                     if (typeModel.IsImported)
                         continue;
 
-                    string cppFile = Path.Combine(csproj.DestinationFolder, fileName + ".cpp");
+                    if (i != 0 && lastNs != typeModel.NsName && typeModel.NsNameParts != null)
+                    {
+                        hWriter.WriteLine(new string('}', typeModel.NsNameParts.Length));
+                    }
+
+                    if (lastNs != typeModel.NsName && typeModel.NsNameParts != null)
+                    {
+                        foreach (string n in typeModel.NsNameParts)
+                        {
+                            hWriter.Write("namespace {0} {{ ", n);
+                        }
+
+                        j = typeModel.NsNameParts.Length;
+
+                        hWriter.WriteLine();
+                    }
+
+                    if (typeModel is ClassModel)
+                    {
+                        hWriter.WriteLine("class {0};", (typeModel as ClassModel).ClassDeclaration.Identifier.Text);
+                    }
+                    else if (typeModel is StructModel)
+                    {
+                        hWriter.WriteLine("struct {0};", (typeModel as StructModel).StructDeclaration.Identifier.Text);
+                    }
+                    else if (typeModel is InterfaceModel)
+                    {
+                        hWriter.WriteLine("class {0};", (typeModel as InterfaceModel).InterfaceDeclaration.Identifier.Text);
+                    }
+                    else if (typeModel is EnumModel)
+                    {
+                        hWriter.WriteLine("struct {0};", (typeModel as EnumModel).EnumDeclaration.Identifier.Text);
+                    }
+                    else if (typeModel is DelegateModel)
+                    {
+                        // TODO
+                        hWriter.WriteLine("class {0};", (typeModel as DelegateModel).DelegateDeclaration.Identifier.Text);
+                    }
+
+                    lastNs = typeModel.NsName;
+                    i++;
+                }
+
+                if (j > 0)
+                {
+                    hWriter.WriteLine(new string('}', j));
+                }
+
+                i = j = 0;
+                lastNs = null;
+
+                // Generate type declaratios and implementions
+                // Also updates .cbp file for Code::Blocks IDE if it exists
+                // Otherwise it only generates .h and .cpp files
+                foreach (var kvp in knownTypes)
+                {
+                    TypeModel typeModel = kvp.Value;
+
+                    if (typeModel.IsImported)
+                        continue;
+
+                    if (i != 0 && lastNs != typeModel.NsName && typeModel.NsNameParts != null)
+                    {
+                        hWriter.WriteLine(new string('}', typeModel.NsNameParts.Length));
+                    }
+
+                    hWriter.WriteLine();
+
+                    if (lastNs != typeModel.NsName && typeModel.NsNameParts != null)
+                    {
+                        foreach (string n in typeModel.NsNameParts)
+                        {
+                            hWriter.Write("namespace {0} {{ ", n);
+                        }
+
+                        j = typeModel.NsNameParts.Length;
+
+                        hWriter.WriteLine();
+                        hWriter.WriteLine();
+                    }
+
                     CodeWriter.Depth depth = new CodeWriter.Depth();
 
                     if (typeModel is ClassModel || typeModel is StructModel)
                     {
+                        string fileName = typeModel.FullName.Replace("::", ".") + ".cpp";
+                        if (fileName.StartsWith(csproj.DefaultNamespace))
+                        {
+                            // Omit default NS on file name
+                            fileName = fileName.Substring(csproj.DefaultNamespace.Length + 1);
+                        }
+
+                        string cppFile = Path.Combine(csproj.DestinationFolder, fileName);
+                        generatedFiles.Add(fileName);
+
                         using (FileStream cppFileStream = new FileStream(cppFile, FileMode.Create, FileAccess.Write, FileShare.None))
                         using (StreamWriter cppWriter = new StreamWriter(cppFileStream, Encoding.UTF8))
                         {
-                            cppWriter.WriteLine("#include \"" + csproj.Name + ".h\"");
+                            cppWriter.WriteLine("#include \"{0}\"", headersFile);
 
                             typeModel.Compiler.Compile(new CodeWriter(hWriter, depth), new CodeWriter(cppWriter, depth), depth);
                         }
@@ -184,7 +294,21 @@ namespace HappyCspp.Compiler
                     {
                         typeModel.Compiler.Compile(new CodeWriter(hWriter, depth), new NullCodeWriter(), depth);
                     }
+
+                    lastNs = typeModel.NsName;
+                    i++;
                 }
+
+                if (j > 0)
+                {
+                    hWriter.WriteLine(new string('}', j));
+                }
+            }
+
+            if (cbpFile != null)
+            {
+                CbProject cbp = new CbProject(cbpFile);
+                cbp.UpdateSourceFiles(generatedFiles);
             }
 
             Console.WriteLine("Done!");

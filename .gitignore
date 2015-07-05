@@ -201,3 +201,6 @@ FakesAssemblies/
 
 # MonoDevelop IDE
 *.userprefs
+
+# Ignore generated cpp files
+cpp/

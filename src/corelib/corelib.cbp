@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
@@ -36,12 +36,12 @@
 				</Linker>
 			</Target>
 		</Build>
-		<Unit filename="cpp/System.Environment.cpp" />
-		<Unit filename="cpp/corelib.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
 		</Extensions>
+		<Unit filename="cpp/corelib.h" />
+		<Unit filename="cpp/Environment.cpp" />
 	</Project>
 </CodeBlocks_project_file>
