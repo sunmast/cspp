@@ -1,8 +1,6 @@
 cs2cpp
 ======
 
-This is a C\# -\> C++ source to source compiler.
-
 Code C++ with C\# *productivity*! Run C\# with C++ *performance*!
 
 Status Update (June 7, 2015)
@@ -29,7 +27,9 @@ Short Term Goals
 
 -   Import C/C++ standard libraries
 
--   Import Boost library
+-   Import Boost libraries
+
+-   Version 1.0 release
 
 Secondary Goals
 ---------------
@@ -56,15 +56,13 @@ C\# code:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 namespace HappyCspp.Tests
 {
-    using std;
-
     class TestMain
     {
         static int Main(string[] args)
         {
             for (int i = 0; i < args.Length; i++)
             {
-                StdIO.PrintF(args[i] += " ");
+                std.IO.PrintF(args[i] += " ");
             }
 
             return 0;
@@ -86,8 +84,8 @@ namespace std
     /// <remarks>
     /// http://www.cplusplus.com/reference/cstdio/
     /// </remarks>
-    [Imported, Alias(""), DefinedIn("cstdio")]
-    public struct StdIO
+    [Imported, Alias("")]
+    public struct IO
     {
         [Alias("printf", "wprintf")]
         public static extern int PrintF(string format, params object[] args);
@@ -107,18 +105,18 @@ using namespace std;
 
 namespace HappyCspp { namespace Tests {
 
-    int32_t TestMain::Main(_<sys::array<_<sys::string>>> args) {
+    int32_t TestMain::Main(_array<_string> args) {
         for (int32_t i = 0; i < args->get_Length(); i++) {
-            std::printf(args.IndexOf<_<sys::string>>(i) += " ");
+            std::printf(args.IndexOf<_string>(i) += " ");
         }
         return 0;
     }
 }}
 
 int main(int argc, char* argv[]) {
-    _<sys::array<_<sys::string>>> args = new_<sys::array<_<sys::string>>>(argc - 1);
+    _array<_string> args = new_<array<_string>>(argc - 1);
     for (int i = 1; i < argc; i++) {
-        args.IndexOf<_<sys::string>>(i - 1) = new_<sys::string>(argv[i]);
+        args.IndexOf<_string>(i - 1) = argv[i];
     }
     return HappyCspp::Tests::TestMain::Main(args);
 }
