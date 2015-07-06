@@ -43,7 +43,7 @@ namespace HappyCspp.Compiler
             string cbpFile = Path.ChangeExtension(csprojFile, ".cbp");
             if (File.Exists(cbpFile))
             {
-                Console.WriteLine("Code::Blocks C++ project file '{0}' found", cbpFile);
+                Console.WriteLine("Code::Blocks C++ project file '{0}' found", Path.GetFileName(cbpFile));
             }
             else
             {
@@ -187,9 +187,9 @@ namespace HappyCspp.Compiler
                     if (typeModel.IsImported)
                         continue;
 
-                    if (i != 0 && lastNs != typeModel.NsName && typeModel.NsNameParts != null)
+                    if (i != 0 && lastNs != typeModel.NsName && j > 0)
                     {
-                        hWriter.WriteLine(new string('}', typeModel.NsNameParts.Length));
+                        hWriter.WriteLine(new string('}', j));
                     }
 
                     if (lastNs != typeModel.NsName && typeModel.NsNameParts != null)
@@ -248,9 +248,9 @@ namespace HappyCspp.Compiler
                     if (typeModel.IsImported)
                         continue;
 
-                    if (i != 0 && lastNs != typeModel.NsName && typeModel.NsNameParts != null)
+                    if (i != 0 && lastNs != typeModel.NsName && j > 0)
                     {
-                        hWriter.WriteLine(new string('}', typeModel.NsNameParts.Length));
+                        hWriter.WriteLine(new string('}', j));
                     }
 
                     hWriter.WriteLine();

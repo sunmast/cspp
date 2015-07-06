@@ -94,7 +94,7 @@ namespace HappyCspp.Compiler
             if (this.IsStatic) sb.Append("static ");
             if (this.IsExtern) sb.Append("extern ");
             if (this.IsVirtual) sb.Append("virtual ");
-            if (this.IsOverride) sb.Append("override ");
+            if (this.IsOverride) sb.Append("virtual ");
 
             return sb.Length == 0 ? null : sb.ToString();
         }

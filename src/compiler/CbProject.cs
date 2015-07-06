@@ -21,11 +21,13 @@ namespace HappyCspp.Compiler
 
             XmlElement projNode = doc.DocumentElement["Project"];
 
+            // Remove all units (source files)
             foreach (XmlNode node in projNode.GetElementsByTagName("Unit"))
             {
                 projNode.RemoveChild(node);
             }
 
+            // Add all source files
             foreach (string file in files)
             {
                 var unit = doc.CreateElement("Unit");
@@ -33,6 +35,7 @@ namespace HappyCspp.Compiler
                 projNode.AppendChild(unit);
             }
 
+            // Save XML using CB default indentation style
             using (XmlTextWriter xtw = new XmlTextWriter(this.projFile, Encoding.UTF8))
             {
                 xtw.Formatting = Formatting.Indented;

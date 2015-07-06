@@ -8,8 +8,8 @@ namespace std
     /// <remarks>
     /// http://www.cplusplus.com/reference/cstdio/
     /// </remarks>
-    [Imported, Alias(""), DefinedIn("cstdio")]
-    public struct StdIO
+    [Imported, Alias("")]
+    public struct IO
     {
         #region Formatted input/output
 

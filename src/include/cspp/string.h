@@ -42,7 +42,25 @@ public:
         return this->c_str();
     }
 };
-
-typedef base_string<char> string;
-typedef base_string<wchar_t> wstring;
 }
+
+typedef sys::base_string<char> string;
+typedef sys::base_string<wchar_t> wstring;
+
+class _string : public _<string>
+{
+public:
+
+    _string(const char* str) : _<string>(new_<string>(str))
+    {
+    }
+};
+
+class _wstring : public _<wstring>
+{
+public:
+
+    _wstring(const wchar_t* wstr) : _<wstring>(new_<wstring>(wstr))
+    {
+    }
+};

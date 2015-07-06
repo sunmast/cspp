@@ -1,16 +1,14 @@
 ﻿namespace HappyCspp.Tests
 {
-    using std;
     using System;
 
     class TestMain
     {
         static int Main(string[] args)
         {
-            for (int i = 0; i < args.Length; i++)
-            {
-                StdIO.PrintF(args[i] += " ");
-            }
+            Util.WriteLine("CS++ Test Suite v0.1");
+
+            Core.Tests.Run();
 
             return 0;
         }

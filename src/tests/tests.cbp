@@ -42,6 +42,14 @@
 			<debugger />
 		</Extensions>
 		<Unit filename="cpp/tests.h" />
+		<Unit filename="cpp/Core.Tests.cpp" />
+		<Unit filename="cpp/Core.XClassL0.cpp" />
+		<Unit filename="cpp/Core.XClassL1.cpp" />
+		<Unit filename="cpp/Core.XClassL2.cpp" />
+		<Unit filename="cpp/Core.XDelegate.cpp" />
+		<Unit filename="cpp/Core.XStruct.cpp" />
+		<Unit filename="cpp/Test.cpp" />
 		<Unit filename="cpp/TestMain.cpp" />
+		<Unit filename="cpp/Util.cpp" />
 	</Project>
 </CodeBlocks_project_file>

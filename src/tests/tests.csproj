@@ -34,6 +34,14 @@
   <ItemGroup>
     <Compile Include="TestMain.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Core\XInterface.cs" />
+    <Compile Include="Core\XStruct.cs" />
+    <Compile Include="Core\XEnum.cs" />
+    <Compile Include="Core\XClass.cs" />
+    <Compile Include="Core\XDelegate.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="Core\Tests.cs" />
+    <Compile Include="Test.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -43,9 +51,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="TypeSystem\" />
-    <Folder Include="MemoryMgmt\" />
     <Folder Include="Syntax\" />
-    <Folder Include="Performance\" />
+    <Folder Include="Core\" />
+    <Folder Include="MM\" />
+    <Folder Include="Perf\" />
+    <Folder Include="Parallel\" />
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

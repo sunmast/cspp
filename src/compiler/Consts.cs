@@ -28,13 +28,11 @@ namespace HappyCspp.Compiler
             {"void", "System.Void"},
         };
 
-        public static string SharedPtr = "_";
-
         public static string WeakPtr = "sys::wptr";
 
         public static string FuncPtr = "sys::fptr";
 
-        public static string Array = "sys::array";
+        public static string Array = "array";
 
         public static string GetterPrefix = "get_";
 

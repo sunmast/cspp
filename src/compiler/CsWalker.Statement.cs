@@ -139,7 +139,7 @@ namespace HappyCspp.Compiler
         {
             this.StatementBlockSyntax(
                 string.Format("for ({0}& {1} : {2})",
-                    this.WrapTypeName(forEachStatement.Type),
+                    this.WrapTypeName(forEachStatement.Type, true),
                     forEachStatement.Identifier.Text,
                     this.ExprSyntax(forEachStatement.Expression, out dummyType)),
                 cw, null,
@@ -157,7 +157,7 @@ namespace HappyCspp.Compiler
             if (usingStatement.Declaration != null && usingStatement.Expression == null)
             {
                 // E.g. using (Foo f = new Foo()) {}
-                string type = this.WrapTypeName(usingStatement.Declaration.Type);
+                string type = this.WrapTypeName(usingStatement.Declaration.Type, true);
 
                 foreach (var usingObj in usingStatement.Declaration.Variables)
                 {
@@ -389,14 +389,14 @@ namespace HappyCspp.Compiler
                     {
                         // E.g. catch (Exception ex) {}
                         catchSyntax = string.Format("catch ({0}& {1})",
-                            this.WrapTypeName(catchClause.Declaration.Type),
+                            this.WrapTypeName(catchClause.Declaration.Type, true),
                             catchClause.Declaration.Identifier.Text);
                     }
                     else
                     {
                         // E.g. catch (Exception) {}
                         catchSyntax = string.Format("catch ({0}&)",
-                            this.WrapTypeName(catchClause.Declaration.Type));
+                            this.WrapTypeName(catchClause.Declaration.Type, true));
                     }
                 }
                 else

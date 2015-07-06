@@ -2,8 +2,6 @@
 
 #include "../cspp.h"
 
-namespace sys
-{
 template <typename T> class array
 {
 private:
@@ -63,4 +61,11 @@ public:
         return this == &operand;
     }
 };
-}
+
+template <typename T> class _array : public _<array<T>>
+{
+public:
+    _array(array<T>* arr) : _<array<T>>(arr)
+    {
+    }
+};

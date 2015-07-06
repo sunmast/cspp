@@ -36,13 +36,14 @@
     <Compile Include="Array.cs" />
     <Compile Include="Runtime.cs" />
     <Compile Include="Environment.cs" />
-    <Compile Include="std\CLib\StdIO.cs" />
     <Compile Include="std\Containers\Vector.cs" />
     <Compile Include="SizeT.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="std\CLib\IO.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="std\" />
+    <Folder Include="std\CLib\" />
   </ItemGroup>
 </Project>

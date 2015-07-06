@@ -77,18 +77,6 @@
     {
     }
 
-    [Imported]
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum | AttributeTargets.Delegate | AttributeTargets.Struct | AttributeTargets.Method)]
-    public class DefinedInAttribute : Attribute
-    { 
-        public string HeaderFile { get; private set; }
-
-        public DefinedInAttribute(string headerFile)
-        {
-            this.HeaderFile = headerFile;
-        }
-    }
-
     [AttributeUsage(AttributeTargets.Field, Inherited = false)]
     [Imported]
     public sealed class WeakRefAttribute : Attribute
