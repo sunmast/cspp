@@ -1,4 +1,4 @@
-cs2cpp
+CS++
 ======
 
 Code C++ with C\# *productivity!* Run C\# with C++ *performance!*
@@ -9,14 +9,14 @@ Status Update (July 7, 2015)
 -   Initial source code published: compiler, corelib, includes, and helloworld
     sample
 
--   helloworld running on Windows & Linux (VC++/g++ compiler with -std=c++11)
+-   Entire tool chain running on Windows & Linux (VC++/g++ compiler with -std=c++11)
 
 Next Update
 -----------
 
 -   Unit tests
 
--   Port to Linux & Mac OS
+-   Port to Mac OS
 
 -   Version 0.1 release
 
@@ -91,9 +91,6 @@ namespace std
     {
         [Alias("printf", "wprintf")]
         public static extern int PrintF(string format, params object[] args);
-
-        [Alias("getchar")]
-        public static extern int GetChar();
     }
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
