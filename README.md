@@ -1,15 +1,15 @@
 cs2cpp
 ======
 
-Code C++ with C\# *productivity*! Run C\# with C++ *performance*!
+Code C++ with C\# *productivity!* Run C\# with C++ *performance!*
 
-Status Update (June 7, 2015)
+Status Update (July 7, 2015)
 ----------------------------
 
 -   Initial source code published: compiler, corelib, includes, and helloworld
     sample
 
--   helloworld running on Windows (VC++/g++ compiler with -std=c++11)
+-   helloworld running on Windows & Linux (VC++/g++ compiler with -std=c++11)
 
 Next Update
 -----------
@@ -36,17 +36,19 @@ Secondary Goals
 
 -   Support advanced C\# features like yield, await, LINQ, etc.
 
--   Compile Roslyn source code
+-   Compile Roslyn source code and build a native compiler
 
--   Compile MonoDevelop source code
+-   Import OS specific libraries
 
 -   TBD
 
-Memory Management (to be continued)
+Memory Management
 -----------------------------------
 
-In short, its based on an improved reference counter algorithm in both compile
+In short, its based on an optimized reference counter algorithm in both compile
 time and runtime.
+
+https://github.com/sunmast/cs2cpp/wiki/Notes#memory-management
 
 Hello World
 -----------
@@ -54,9 +56,9 @@ Hello World
 C\# code:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-namespace HappyCspp.Tests
+namespace HappyCspp.HelloWorld
 {
-    class TestMain
+    class MainClass
     {
         static int Main(string[] args)
         {
@@ -101,11 +103,9 @@ Generated C++ code:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "tests.h"
 
-using namespace std;
+namespace HappyCspp { namespace HelloWorld {
 
-namespace HappyCspp { namespace Tests {
-
-    int32_t TestMain::Main(_array<_string> args) {
+    int32_t MainClass::Main(_array<_string> args) {
         for (int32_t i = 0; i < args->get_Length(); i++) {
             std::printf(args.IndexOf<_string>(i) += " ");
         }
@@ -118,7 +118,7 @@ int main(int argc, char* argv[]) {
     for (int i = 1; i < argc; i++) {
         args.IndexOf<_string>(i - 1) = argv[i];
     }
-    return HappyCspp::Tests::TestMain::Main(args);
+    return HappyCspp::HelloWorld::MainClass::Main(args);
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
