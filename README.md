@@ -3,6 +3,14 @@ CS++
 
 Code C++ with C\# *productivity!* Run C\# with C++ *performance!*
 
+Status Update (Oct 29, 2015)
+----------------------------
+
+- Working on a ARC implemenation that's comparable to tracing GC in terms of CPU throughput.
+
+- All other work are pending.
+
+
 Status Update (July 7, 2015)
 ----------------------------
 
