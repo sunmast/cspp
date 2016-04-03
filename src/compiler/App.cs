@@ -305,11 +305,11 @@ namespace HappyCspp.Compiler
                 }
             }
 
-            if (cbpFile != null)
-            {
-                CbProject cbp = new CbProject(cbpFile);
-                cbp.UpdateSourceFiles(generatedFiles);
-            }
+//            if (cbpFile != null)
+//            {
+//                CbProject cbp = new CbProject(cbpFile);
+//                cbp.UpdateSourceFiles(generatedFiles);
+//            }
 
             Console.WriteLine("Done!");
 
