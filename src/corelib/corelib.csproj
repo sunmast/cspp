@@ -18,17 +18,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <NoWarn>0626;0660;0661</NoWarn>
+    <NoWarn>0660;0661;0626</NoWarn>
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <NoStdLib>true</NoStdLib>
+    <NoWarn>0660;0661;0626</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="String.cs" />

@@ -442,7 +442,7 @@ namespace HappyCspp.Compiler
 			return string.Format("new_<{0}>({1})",
 				this.SyntaxArrayType(
                     arrayCreationExpression.Type,
-                    initializer == null || initializer.Expressions == null ? -1 : initializer.Expressions.Count),
+                    initializer == null ? -1 : initializer.Expressions.Count),
                 this.ExprSyntax(initializer, out this.dummyType));
 		}
 

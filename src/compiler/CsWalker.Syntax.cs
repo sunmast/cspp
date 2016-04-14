@@ -110,7 +110,7 @@ namespace HappyCspp.Compiler
 
         private string SyntaxTypeParameter(TypeParameterSyntax typeParameter)
         {
-            if (typeParameter.VarianceKeyword != null && !string.IsNullOrEmpty(typeParameter.VarianceKeyword.Text))
+            if (!string.IsNullOrEmpty(typeParameter.VarianceKeyword.Text))
             {
                 throw Util.NewSyntaxNotSupportedException(typeParameter);
             }
@@ -229,7 +229,7 @@ namespace HappyCspp.Compiler
             string defaultClause = forHeader ? this.SyntaxEqualsValueClause(parameter.Default) : null;
             string byRef = null;
 
-            if (parameter.Modifiers != null)
+            if (parameter.Modifiers.Count > 0)
             {
                 // give params x[] a default value null
                 foreach (var m in parameter.Modifiers)
@@ -343,7 +343,7 @@ namespace HappyCspp.Compiler
 
         private string SyntaxModifiers(SyntaxTokenList modifiers)
         {
-            if (modifiers == null) return null;
+            if (modifiers.Count == 0) return null;
 
             StringBuilder sb = new StringBuilder();
             foreach (var modifier in modifiers)
@@ -358,7 +358,7 @@ namespace HappyCspp.Compiler
         private string SyntaxSeparatedSyntaxList<T>(SeparatedSyntaxList<T> separatedSyntaxList, Func<T, string> func)
             where T : SyntaxNode
         {
-            if (separatedSyntaxList == null) return null;
+            if (separatedSyntaxList.Count == 0) return null;
 
             List<string> list = new List<string>();
             foreach (var syntax in separatedSyntaxList)
@@ -371,7 +371,7 @@ namespace HappyCspp.Compiler
 
         private string SyntaxArgumentList(ArgumentListSyntax argumentList)
         {
-            if (argumentList == null || argumentList.Arguments == null) return null;
+            if (argumentList == null || argumentList.Arguments.Count == 0) return null;
 
             List<string> list = new List<string>();
             foreach (var arg in argumentList.Arguments)
@@ -387,7 +387,7 @@ namespace HappyCspp.Compiler
         {
             if (arg.NameColon != null) throw Util.NewSyntaxNotSupportedException(arg.NameColon);
 
-            if (arg.RefOrOutKeyword != null && arg.RefOrOutKeyword.Text != "")
+            if (!string.IsNullOrEmpty(arg.RefOrOutKeyword.Text))
             {
                 // Passing parameter by reference, but C++ compiler will take care of it by looking parameter definition in the function
             }

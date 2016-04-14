@@ -245,11 +245,6 @@ namespace HappyCspp.Compiler
 
         private void StatementGotoSyntax(GotoStatementSyntax gotoStatement, CodeWriter cw)
         {
-            if (gotoStatement.CaseOrDefaultKeyword != null)
-            {
-                throw Util.NewSyntaxNotSupportedException(gotoStatement.CaseOrDefaultKeyword);
-            }
-
             cw.WriteLine("goto {0};", this.ExprSyntax(gotoStatement.Expression, out dummyType));
         }
 
@@ -278,7 +273,7 @@ namespace HappyCspp.Compiler
 
         private void StatementForSyntax(ForStatementSyntax forStatement, CodeWriter cw)
         {
-            if (forStatement.Initializers != null && forStatement.Initializers.Count > 0)
+            if (forStatement.Initializers.Count > 0)
             {
                 throw Util.NewSyntaxNotSupportedException(forStatement.Initializers);
             }
@@ -385,7 +380,7 @@ namespace HappyCspp.Compiler
 
                 if (catchClause.Declaration != null)
                 {
-                    if (catchClause.Declaration.Identifier != null)
+                    if (!string.IsNullOrEmpty(catchClause.Declaration.Identifier.Text))
                     {
                         // E.g. catch (Exception ex) {}
                         catchSyntax = string.Format("catch ({0}& {1})",

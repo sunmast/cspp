@@ -228,7 +228,7 @@ namespace HappyCspp.Compiler
 
         private void ProcessAttributes()
         {
-            if (this.Attributes != null)
+            if (this.Attributes.Count > 0)
             {
                 foreach (var attrList in this.Attributes)
                 {

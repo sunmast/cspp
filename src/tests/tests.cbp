@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
@@ -12,12 +12,14 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-Weffc++" />
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add directory="../include" />
 					<Add directory="../corelib/cpp" />
 				</Compiler>
+				<Linker>
+					<Add library="../corelib/bin/Debug/corelib.a" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/tests" prefix_auto="1" extension_auto="1" />
@@ -36,12 +38,6 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
-		<Unit filename="cpp/tests.h" />
 		<Unit filename="cpp/Core.Tests.cpp" />
 		<Unit filename="cpp/Core.XClassL0.cpp" />
 		<Unit filename="cpp/Core.XClassL1.cpp" />
@@ -51,5 +47,11 @@
 		<Unit filename="cpp/Test.cpp" />
 		<Unit filename="cpp/TestMain.cpp" />
 		<Unit filename="cpp/Util.cpp" />
+		<Unit filename="cpp/tests.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

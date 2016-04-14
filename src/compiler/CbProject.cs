@@ -22,7 +22,16 @@ namespace HappyCspp.Compiler
             XmlElement projNode = doc.DocumentElement["Project"];
 
             // Remove all units (source files)
-            foreach (XmlNode node in projNode.GetElementsByTagName("Unit"))
+            XmlNodeList nodeList = projNode.GetElementsByTagName("Unit");
+            XmlNode[] nodes = new XmlNode[nodeList.Count];
+
+            int i = 0;
+            foreach (XmlNode node in nodeList)
+            {
+                nodes[i++] = node;
+            }
+
+            foreach (XmlNode node in nodes)
             {
                 projNode.RemoveChild(node);
             }
