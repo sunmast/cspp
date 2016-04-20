@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
@@ -38,20 +38,21 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+		<Unit filename="cpp/tests.h" />
+		<Unit filename="cpp/Assert.cpp" />
 		<Unit filename="cpp/Core.Tests.cpp" />
 		<Unit filename="cpp/Core.XClassL0.cpp" />
 		<Unit filename="cpp/Core.XClassL1.cpp" />
 		<Unit filename="cpp/Core.XClassL2.cpp" />
 		<Unit filename="cpp/Core.XDelegate.cpp" />
 		<Unit filename="cpp/Core.XStruct.cpp" />
-		<Unit filename="cpp/Test.cpp" />
-		<Unit filename="cpp/TestMain.cpp" />
+		<Unit filename="cpp/MainClass.cpp" />
+		<Unit filename="cpp/SyntaxTests.cpp" />
 		<Unit filename="cpp/Util.cpp" />
-		<Unit filename="cpp/tests.h" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

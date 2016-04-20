@@ -12,13 +12,13 @@ namespace HappyCspp.Tests.Core
         {
             get
             {
-                return Test.ImCalled("XClassL0.VirtualProperty");
+                return Assert.ImCalled("XClassL0.VirtualProperty");
             }
         }
 
         public virtual void VirtualFoo()
         {
-            Test.ImCalled("XClassL0.VirtualFoo");
+            Assert.ImCalled("XClassL0.VirtualFoo");
         }
 
         public abstract void AbstractFoo();
@@ -34,18 +34,18 @@ namespace HappyCspp.Tests.Core
         {
             get
             {
-                return Test.ImCalled("XClassL1.VirtualProperty");
+                return Assert.ImCalled("XClassL1.VirtualProperty");
             }
         }
 
         public override void VirtualFoo()
         {
-            Test.ImCalled("XClassL1.VirtualFoo");
+            Assert.ImCalled("XClassL1.VirtualFoo");
         }
 
         public override void AbstractFoo()
         {
-            Test.ImCalled("XClassL1.AbstractFoo");
+            Assert.ImCalled("XClassL1.AbstractFoo");
         }
     }
 
@@ -59,18 +59,18 @@ namespace HappyCspp.Tests.Core
         {
             get
             {
-                return Test.ImCalled("XClassL2.VirtualProperty");
+                return Assert.ImCalled("XClassL2.VirtualProperty");
             }
         }
 
         public override void VirtualFoo()
         {
-            Test.ImCalled("XClassL2.VirtualFoo");
+            Assert.ImCalled("XClassL2.VirtualFoo");
         }
 
         public override void AbstractFoo()
         {
-            Test.ImCalled("XClassL2.AbstractFoo");
+            Assert.ImCalled("XClassL2.AbstractFoo");
         }
     }
 }

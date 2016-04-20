@@ -189,6 +189,17 @@ namespace System.Runtime.InteropServices
     }
 }
 
+namespace System.Runtime.CompilerServices
+{
+    [Imported]
+    public class RuntimeHelpers
+    {
+        public static void InitializeArray(Array array, RuntimeFieldHandle fldHandle)
+        {
+        }
+    }
+}
+
 namespace System.Collections
 {
     [Imported]

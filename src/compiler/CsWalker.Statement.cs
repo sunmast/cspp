@@ -137,11 +137,18 @@ namespace HappyCspp.Compiler
 
         private void StatementForEachSyntax(ForEachStatementSyntax forEachStatement, CodeWriter cw)
         {
+            TypeInfo t = this.semantic.GetTypeInfo(forEachStatement.Type);
+            this.memberModel.Variables.Push(new VariableModel(t, forEachStatement.Identifier.Text, this.memberModel.ScopeDepth + 1));
+
+            TypeInfo exprType;
+            string expr = this.ExprSyntax(forEachStatement.Expression, out exprType);
+
             this.StatementBlockSyntax(
-                string.Format("for ({0}& {1} : {2})",
+                string.Format("for ({0}& {1} : {2}{3})",
                     this.WrapTypeName(forEachStatement.Type, true),
                     forEachStatement.Identifier.Text,
-                    this.ExprSyntax(forEachStatement.Expression, out dummyType)),
+                    exprType.Type.IsValueType ? null : "*",
+                    expr),
                 cw, null,
                 forEachStatement.Statement);
         }
@@ -177,7 +184,7 @@ namespace HappyCspp.Compiler
                 }
                 else
                 {
-                    cw.WriteLine("auto _ = {0};", this.ExprSyntax(usingStatement.Expression, out this.dummyType));
+                    cw.WriteLine("auto _ = {0};", this.ExprSyntax(usingStatement.Expression));
                     list.Add("_");
                 }
             }
@@ -230,7 +237,7 @@ namespace HappyCspp.Compiler
 
         private void StatementExpressionSyntax(ExpressionStatementSyntax expression, CodeWriter cw)
         {
-            cw.Write(this.ExprSyntax(expression.Expression, out dummyType));
+            cw.Write(this.ExprSyntax(expression.Expression));
             cw.AppendLine(";");
         }
 
@@ -245,30 +252,30 @@ namespace HappyCspp.Compiler
 
         private void StatementGotoSyntax(GotoStatementSyntax gotoStatement, CodeWriter cw)
         {
-            cw.WriteLine("goto {0};", this.ExprSyntax(gotoStatement.Expression, out dummyType));
+            cw.WriteLine("goto {0};", this.ExprSyntax(gotoStatement.Expression));
         }
 
         private void StatementReturnSyntax(ReturnStatementSyntax returnStatement, CodeWriter cw)
         {
-            string str = this.ExprSyntax(returnStatement.Expression, out dummyType);
+            string str = this.ExprSyntax(returnStatement.Expression);
             cw.WriteLine("return{0};", str == null ? null : " " + str);
         }
 
         private void StatementThrowSyntax(ThrowStatementSyntax throwStatement, CodeWriter cw)
         {
-            string str = this.ExprSyntax(throwStatement.Expression, out dummyType);
+            string str = this.ExprSyntax(throwStatement.Expression);
             cw.WriteLine("throw{0};", str == null ? null : " " + str);
         }
 
         private void StatementWhileSyntax(WhileStatementSyntax whileStatement, CodeWriter cw)
         {
-            this.StatementBlockSyntax(string.Format("while ({0})", this.ExprSyntax(whileStatement.Condition, out dummyType)), cw, null, whileStatement.Statement);
+            this.StatementBlockSyntax(string.Format("while ({0})", this.ExprSyntax(whileStatement.Condition)), cw, null, whileStatement.Statement);
         }
 
         private void StatementDoSyntax(DoStatementSyntax doStatement, CodeWriter cw)
         {
             this.StatementBlockSyntax("do", cw, null, doStatement.Statement);
-            cw.WriteLine("while ({0});", this.ExprSyntax(doStatement.Condition, out dummyType));
+            cw.WriteLine("while ({0});", this.ExprSyntax(doStatement.Condition));
         }
 
         private void StatementForSyntax(ForStatementSyntax forStatement, CodeWriter cw)
@@ -287,15 +294,15 @@ namespace HappyCspp.Compiler
             this.StatementBlockSyntax(
                 string.Format("for ({0}; {1}; {2})",
                     this.SyntaxSingleLineVariableDeclaration(forStatement.Declaration),
-                    this.ExprSyntax(forStatement.Condition, out dummyType),
-                    this.SyntaxSeparatedSyntaxList(forStatement.Incrementors, (s) => this.ExprSyntax(s, out dummyType))),
+                    this.ExprSyntax(forStatement.Condition),
+                    this.SyntaxSeparatedSyntaxList(forStatement.Incrementors, (s) => this.ExprSyntax(s))),
                 cw, null,
                 forStatement.Statement);
         }
 
         private void StatementIfSyntax(IfStatementSyntax ifStatement, CodeWriter cw)
         {
-            this.StatementBlockSyntax(string.Format("if ({0})", this.ExprSyntax(ifStatement.Condition, out dummyType)), cw, null, ifStatement.Statement);
+            this.StatementBlockSyntax(string.Format("if ({0})", this.ExprSyntax(ifStatement.Condition)), cw, null, ifStatement.Statement);
             this.StatementElseSyntax(ifStatement.Else, cw);
         }
 
@@ -308,7 +315,7 @@ namespace HappyCspp.Compiler
 
         private void StatementSwitchSyntax(SwitchStatementSyntax switchStatement, CodeWriter cw)
         {
-            cw.WriteLine("switch ({0}) {{", this.ExprSyntax(switchStatement.Expression, out dummyType));
+            cw.WriteLine("switch ({0}) {{", this.ExprSyntax(switchStatement.Expression));
 
             foreach (var section in switchStatement.Sections)
             {
@@ -316,7 +323,7 @@ namespace HappyCspp.Compiler
                 {
                     if (label is CaseSwitchLabelSyntax)
                     {
-                        cw.WriteLine("case {0}:", this.ExprSyntax((label as CaseSwitchLabelSyntax).Value, out dummyType));
+                        cw.WriteLine("case {0}:", this.ExprSyntax((label as CaseSwitchLabelSyntax).Value));
                     }
                     else if (label is DefaultSwitchLabelSyntax)
                     {

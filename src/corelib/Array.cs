@@ -8,6 +8,9 @@ namespace System
         //public extern T this[uint index] { get; set; } // this indexer will be assumed by C# compiler by default
 
         public extern xint Length { get; }
+
+        [Alias("init")]
+        public extern void Init<T>(T[] values);
     }
 
     [Imported, BuiltInType("sys::array")]
@@ -16,5 +19,8 @@ namespace System
         public extern T this[xint index] { get; set; }
 
         public extern xint Length { get; }
+
+        [Alias("init")]
+        public extern void Init(T[] values);
     }
 }

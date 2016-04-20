@@ -39,6 +39,14 @@ namespace HappyCspp.Compiler
             this.writer.Write(this.Indention);
         }
 
+        public virtual void Write(string format)
+        {
+            if (format == null) return;
+
+            this.WriteIndention();
+            this.writer.Write(format);
+        }
+
         public virtual void Write(string format, params object[] args)
         {
             if (format == null) return;

@@ -18,7 +18,6 @@ namespace HappyCspp.Compiler
         private TypeModel typeModel;
         private MemberModel memberModel;
 
-        private TypeInfo dummyType;
         private int memberAccessDepth = 0;
 
         private SemanticModel semantic;
@@ -306,15 +305,24 @@ namespace HappyCspp.Compiler
 
         private string WrapArrayTypeName(IArrayTypeSymbol typeInfo, bool wrapSptr, IEnumerable<UsingDirectiveSyntax> usings = null)
         {
-            string type = this.WrapNamedTypeSymbol(typeInfo.ElementType as INamedTypeSymbol, wrapSptr, usings);
-
-            if (wrapSptr)
+            string type;
+            if (typeInfo.ElementType is IArrayTypeSymbol)
             {
-                return string.Format("_{0}<{1}>", Consts.Array, type);
+                type = this.WrapArrayTypeName(typeInfo.ElementType as IArrayTypeSymbol, wrapSptr, usings);
             }
             else
             {
-                return string.Format("{0}<{1}>", Consts.Array, type);
+                type = this.WrapNamedTypeSymbol(typeInfo.ElementType as INamedTypeSymbol, wrapSptr, usings);
+            }
+
+            string rank = typeInfo.Rank == 1 ? null : ", " + typeInfo.Rank.ToString();
+            if (wrapSptr)
+            {
+                return string.Format("_{0}<{1}{2}>", Consts.Array, type, rank);
+            }
+            else
+            {
+                return string.Format("{0}<{1}{2}>", Consts.Array, type, rank);
             }
         }
 

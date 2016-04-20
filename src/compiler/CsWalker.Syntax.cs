@@ -72,7 +72,8 @@ namespace HappyCspp.Compiler
 
         private string SyntaxType(TypeSyntax type)
         {
-            if (type == null) return null;
+            if (type == null)
+                return null;
 
             if (type.IsVar)
             {
@@ -84,7 +85,7 @@ namespace HappyCspp.Compiler
             }
             else if (type is PredefinedTypeSyntax)
             {
-				return type.ToString();
+                return type.ToString();
             }
             else if (type is ArrayTypeSyntax)
             {
@@ -118,49 +119,23 @@ namespace HappyCspp.Compiler
             return typeParameter.Identifier.Text;
         }
 
-        private string SyntaxArrayType(ArrayTypeSyntax arrayType, int omittedSize = -1)
+        private string SyntaxArrayType(ArrayTypeSyntax arrayType)
         {
             StringBuilder sb = new StringBuilder();
-            int ranks = arrayType.RankSpecifiers.Count;
-            List<string> sizes = new List<string>();
 
-            foreach (var rank in arrayType.RankSpecifiers)
+            for (int i = 0; i < arrayType.RankSpecifiers.Count; i++)
             {
-                List<string> list = new List<string>();
-                foreach(var sizeExpr in rank.Sizes)
+                sb.AppendFormat(i == 0 ? "{0}<" : "_{0}<", Consts.Array);
+                if (i == arrayType.RankSpecifiers.Count - 1)
                 {
-                    string size = this.ExprSyntax(sizeExpr, out dummyType);
-
-                    if (size != null)
-                    {
-                        list.Add(size);
-                    }
-                }
-
-                sizes.Add(list.Count == 0 ? null : string.Join(" * ", list));
-
-                sb.AppendFormat("{0}<", Consts.Array);
-            }
-
-            sb.Append(this.SyntaxType(arrayType.ElementType));
-
-            for (int i = sizes.Count - 1; i >= 0; i--)
-            {
-                string size = sizes[i];
-                if (size == null)
-                {
-                    sb.Append('>');
-                }
-                else
-                {
-                    sb.AppendFormat(">", size);
+                    sb.Append(this.WrapTypeName(arrayType.ElementType, true));
                 }
             }
 
-            if (omittedSize >= 0)
+            for (int i = arrayType.RankSpecifiers.Count - 1; i >= 0; i--)
             {
-                sb.Length--;
-                sb.AppendFormat(", {0}>", omittedSize);
+                var rank = arrayType.RankSpecifiers[i];
+                sb.Append(rank.Sizes.Count == 1 ? ">" : string.Format(", {0}>", rank.Sizes.Count));
             }
 
             return sb.ToString();
@@ -168,7 +143,8 @@ namespace HappyCspp.Compiler
 
         private string SyntaxTypeParameterList(TypeParameterListSyntax typeParameterList)
         {
-            if (typeParameterList == null) return null;
+            if (typeParameterList == null)
+                return null;
 
             List<string> list = new List<string>(typeParameterList.Parameters.Count);
 
@@ -182,7 +158,8 @@ namespace HappyCspp.Compiler
 
         private string SyntaxBracketedParameterList(BracketedParameterListSyntax parameterList, bool forHeader)
         {
-            if (parameterList == null) return null;
+            if (parameterList == null)
+                return null;
 
             List<string> list = new List<string>(parameterList.Parameters.Count);
 
@@ -196,7 +173,8 @@ namespace HappyCspp.Compiler
 
         private string SyntaxTypeArgumentList(TypeArgumentListSyntax typeArgumentList)
         {
-            if (typeArgumentList == null) return null;
+            if (typeArgumentList == null)
+                return null;
 
             List<string> list = new List<string>(typeArgumentList.Arguments.Count);
 
@@ -260,7 +238,8 @@ namespace HappyCspp.Compiler
 
         private string SyntaxTemplateTypeDeclaration(TypeParameterListSyntax typeArgs)
         {
-            if (typeArgs == null) return null;
+            if (typeArgs == null)
+                return null;
 
             List<string> list = new List<string>();
             foreach (var typeArg in typeArgs.Parameters)
@@ -273,7 +252,8 @@ namespace HappyCspp.Compiler
 
         private string SyntaxBaseList(BaseListSyntax baseList, TypeParameterListSyntax typeArgs)
         {
-            if (baseList == null) return null;
+            if (baseList == null)
+                return null;
 
             List<string> list = new List<string>();
             foreach (var baseType in baseList.Types)
@@ -334,16 +314,18 @@ namespace HappyCspp.Compiler
 
         private string SyntaxEqualsValueClause(EqualsValueClauseSyntax equalsValueClause)
         {
-            if (equalsValueClause == null) return null;
+            if (equalsValueClause == null)
+                return null;
 
-            string right = this.ExprSyntax(equalsValueClause.Value, out dummyType);
+            string right = this.ExprSyntax(equalsValueClause.Value);
 
             return " = " + right;
         }
 
         private string SyntaxModifiers(SyntaxTokenList modifiers)
         {
-            if (modifiers.Count == 0) return null;
+            if (modifiers.Count == 0)
+                return null;
 
             StringBuilder sb = new StringBuilder();
             foreach (var modifier in modifiers)
@@ -358,7 +340,8 @@ namespace HappyCspp.Compiler
         private string SyntaxSeparatedSyntaxList<T>(SeparatedSyntaxList<T> separatedSyntaxList, Func<T, string> func)
             where T : SyntaxNode
         {
-            if (separatedSyntaxList.Count == 0) return null;
+            if (separatedSyntaxList.Count == 0)
+                return null;
 
             List<string> list = new List<string>();
             foreach (var syntax in separatedSyntaxList)
@@ -371,7 +354,8 @@ namespace HappyCspp.Compiler
 
         private string SyntaxArgumentList(ArgumentListSyntax argumentList)
         {
-            if (argumentList == null || argumentList.Arguments.Count == 0) return null;
+            if (argumentList == null || argumentList.Arguments.Count == 0)
+                return null;
 
             List<string> list = new List<string>();
             foreach (var arg in argumentList.Arguments)
@@ -385,14 +369,15 @@ namespace HappyCspp.Compiler
 
         private string SyntaxArgument(ArgumentSyntax arg)
         {
-            if (arg.NameColon != null) throw Util.NewSyntaxNotSupportedException(arg.NameColon);
+            if (arg.NameColon != null)
+                throw Util.NewSyntaxNotSupportedException(arg.NameColon);
 
             if (!string.IsNullOrEmpty(arg.RefOrOutKeyword.Text))
             {
                 // Passing parameter by reference, but C++ compiler will take care of it by looking parameter definition in the function
             }
 
-            return this.ExprSyntax(arg.Expression, out dummyType);
+            return this.ExprSyntax(arg.Expression);
         }
     }
 }
