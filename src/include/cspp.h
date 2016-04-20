@@ -20,6 +20,8 @@
 #include "cspp/decimal.h"
 #include "cspp/finally.h"
 
+#include "cppformat/cppformat/format.h"
+
 namespace System
 {
 }
