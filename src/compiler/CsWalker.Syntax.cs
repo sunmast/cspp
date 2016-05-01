@@ -225,14 +225,18 @@ namespace HappyCspp.Compiler
                 }
             }
 
-            TypeInfo paramType = parameter.Type == null ? new TypeInfo() : this.semantic.GetTypeInfo(parameter.Type);// ?? this.semantic.GetTypeInfo(parameter);
+            TypeInfo paramType = this.semantic.GetTypeInfo(parameter.Type);
+            if (paramType.Type.IsReferenceType)
+            {
+                byRef = "&";
+            }
 
             if (!forHeader)
             {
                 this.memberModel.Variables.Push(new VariableModel(paramType, name, this.memberModel.ScopeDepth + 1));
             }
 
-            string type = paramType.Type == null ? "auto" : this.WrapTypeName(paramType, true);
+            string type = this.WrapTypeName(paramType, true);
             return type + byRef + " " + name + defaultClause;
         }
 

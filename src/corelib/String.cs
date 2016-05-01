@@ -1,12 +1,15 @@
 ﻿namespace System
 {
-    [Imported, BuiltInType("sys::string", "sys::wstring")]
+    /// <summary>
+    /// A mutable string
+    /// </summary>
+    [Imported, BuiltInType]
     public class String
     {
         public String(string str) { }
 
         [Alias("c_str")]
-        public extern IntPtr CStr { get; }
+        public extern cstring CStr { get; }
 
         public extern char this [xint index] { get; set;}
 
@@ -30,4 +33,29 @@
 
         public static extern bool operator !=(string x, string y);
     }
+}
+
+/// <summary>
+/// A constant string
+/// </summary>
+[System.Imported, System.BuiltInType, System.Alias("cstring", "wcstring")]
+public struct cstring
+{
+    public static extern implicit operator string(cstring value);
+    public static extern implicit operator xstring(cstring value);
+    public static extern implicit operator cstring(string value);
+}
+
+/// <summary>
+/// A mutable or constant string
+/// This should only be used as a parameter type to allow passing different types of strings to a function
+/// </summary>
+[System.Imported, System.BuiltInType, System.Alias("xstring", "wxstring")]
+public struct xstring
+{
+    public static extern implicit operator xstring(cstring value);
+    public static extern implicit operator xstring(string value);
+
+    [System.Alias("c_str")]
+    public extern cstring CStr { get; }
 }

@@ -33,7 +33,7 @@
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Main.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Core\XInterface.cs" />
     <Compile Include="Core\XStruct.cs" />

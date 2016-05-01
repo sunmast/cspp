@@ -2,6 +2,6 @@
 {
     public static class Environment
     {
-        public static string NewLine = "\r\n";
+        public static cstring NewLine = "\r\n";
     }
 }

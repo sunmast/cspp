@@ -4,10 +4,10 @@ namespace HappyCspp.Tests
 {
     public static class Util
     {
-        public static void WriteLine(string str)
+        public static void WriteLine(xstring str)
         {
-            std.IO.PrintF(str);
-            std.IO.PrintF(Environment.NewLine);
+            fmt.Print(str);
+            fmt.Print(Environment.NewLine);
         }
     }
 }

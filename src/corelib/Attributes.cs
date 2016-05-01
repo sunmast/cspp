@@ -45,15 +45,6 @@
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class BuiltInTypeAttribute : Attribute
     {
-        public string TypeName { get; private set; }
-
-        public string TypeNameForWideChar { get; private set; }
-
-        public BuiltInTypeAttribute(string typeName, string typeNameForWideChar = null)
-        {
-            this.TypeName = typeName;
-            this.TypeNameForWideChar = typeNameForWideChar;
-        }
     }
 
     [Imported]

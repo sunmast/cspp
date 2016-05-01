@@ -6,10 +6,11 @@ namespace HappyCspp.Tests
     {
         static std.Vector<string> stack = new std.Vector<string>();
 
-        public static string ImCalled(string place)
+        public static string ImCalled(xstring place)
         {
-            stack.PushBack(place);
-            return place;
+            string ret = place.CStr;
+            stack.PushBack(ret);
+            return ret;
         }
 
         public static void Reset()
@@ -17,7 +18,7 @@ namespace HappyCspp.Tests
             stack.Clear();
         }
 
-        public static void IsTrue(bool condition, string message)
+        public static void IsTrue(bool condition, xstring message)
         {
             if (!condition)
             {
@@ -25,7 +26,7 @@ namespace HappyCspp.Tests
             }
         }
 
-        public static void IsFalse(bool condition, string message)
+        public static void IsFalse(bool condition, xstring message)
         {
             if (condition)
             {
@@ -33,7 +34,7 @@ namespace HappyCspp.Tests
             }
         }
 
-        public static void Equals(xint expected, xint actual, string message)
+        public static void Equals(xint expected, xint actual, xstring message)
         {
             if (expected != actual)
             {
@@ -42,4 +43,3 @@ namespace HappyCspp.Tests
         }
     }
 }
-

@@ -13,10 +13,10 @@ namespace HappyCspp.Compiler
 {
     abstract class TypeModel // e.g. class Foo<T>
     {
-        private bool isAttributesProcessed, isImported;
+        private bool isAttributesProcessed, isImported, isBuiltIn;
         private NamespaceDeclarationSyntax nsDeclaration;
 
-        private string nsName, fullName, alias, builtInTypeName;
+        private string nsName, fullName, alias;
         private string[] nsNameParts;
 
         public SemanticModel SemanticModel{ get; private set; }
@@ -100,7 +100,7 @@ namespace HappyCspp.Compiler
             }
         }
 
-        public string BuiltInName
+        public bool IsBuiltIn
         {
             get
             {
@@ -109,7 +109,7 @@ namespace HappyCspp.Compiler
                     this.ProcessAttributes();
                 }
 
-                return this.builtInTypeName;
+                return this.isBuiltIn;
             }
         }
 
@@ -235,17 +235,17 @@ namespace HappyCspp.Compiler
                     foreach (var attr in attrList.Attributes)
                     {
                         string name = attr.Name.ToString();
-                        if (name == "Imported" || name == "ImportedAttribute")
+                        if (name == "Imported" || name == "ImportedAttribute" || name == "System.Imported" || name == "System.ImportedAttribute")
                         {
                             this.isImported = true;
                         }
-                        else if (name == "Alias" || name == "AliasAttribute")
+                        else if (name == "Alias" || name == "AliasAttribute" || name == "System.Alias" || name == "System.AliasAttribute")
                         {
                             this.alias = Util.GetAliasOrBuiltInType(attr.ArgumentList.Arguments);
                         }
-                        else if (name == "BuiltInType" || name == "BuiltInTypeAttribute")
+                        else if (name == "BuiltInType" || name == "BuiltInTypeAttribute" || name == "System.BuiltInType" || name == "System.BuiltInTypeAttribute")
                         {
-                            this.builtInTypeName = Util.GetAliasOrBuiltInType(attr.ArgumentList.Arguments);
+                            this.isBuiltIn = true;
                         }
                     }
                 }

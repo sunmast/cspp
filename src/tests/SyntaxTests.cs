@@ -4,9 +4,9 @@ namespace HappyCspp.Tests
 {
     public class SyntaxTests : ITestCase
     {
-        public string Name { get { return "C# syntax tests"; } }
+        public cstring Name { get { return "C# syntax tests"; } }
 
-        public string Description { get { return ""; } }
+        public cstring Description { get { return null; } }
 
         public int Priority { get { return 0; } }
 

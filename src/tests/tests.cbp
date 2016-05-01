@@ -19,6 +19,7 @@
 				</Compiler>
 				<Linker>
 					<Add library="../corelib/bin/Debug/corelib.a" />
+					<Add library="../include/cppformat/cppformat/libcppformat.a" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -51,7 +52,7 @@
 		<Unit filename="cpp/Core.XClassL2.cpp" />
 		<Unit filename="cpp/Core.XDelegate.cpp" />
 		<Unit filename="cpp/Core.XStruct.cpp" />
-		<Unit filename="cpp/MainClass.cpp" />
+		<Unit filename="cpp/Program.cpp" />
 		<Unit filename="cpp/SyntaxTests.cpp" />
 		<Unit filename="cpp/Util.cpp" />
 	</Project>

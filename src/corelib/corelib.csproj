@@ -40,6 +40,7 @@
     <Compile Include="SizeT.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="std\CLib\IO.cs" />
+    <Compile Include="fmt.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

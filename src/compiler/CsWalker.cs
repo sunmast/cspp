@@ -105,36 +105,20 @@ namespace HappyCspp.Compiler
             if (this.mainMethod != null)
             {
                 // Hard coded main definition
-                if (App.PreferWideChar)
-                {
-                    this.cppWriter.NewLine();
-                    this.cppWriter.WriteLine("int wmain(int argc, wchar_t* argv[]) {{");
-                    this.depth++;
-                    this.cppWriter.WriteLine("_array<_wstring> args = new_<array<_wstring>>(argc - 1);");
-                    this.cppWriter.WriteLine("for (int i = 1; i < argc; i++) {{");
-                    this.depth++;
-                    this.cppWriter.WriteLine("args.IndexOf<_wstring>(i - 1) = argv[i];");
-                    this.depth--;
-                    this.cppWriter.WriteLine("}}");
-                    this.cppWriter.WriteLine("return {0}::Main(args);", this.typeModel.FullName);
-                    this.depth--;
-                    this.cppWriter.WriteLine("}}");
-                }
-                else
-                {
-                    this.cppWriter.NewLine();
-                    this.cppWriter.WriteLine("int main(int argc, char* argv[]) {{");
-                    this.depth++;
-                    this.cppWriter.WriteLine("_array<_string> args = new_<array<_string>>(argc - 1);");
-                    this.cppWriter.WriteLine("for (int i = 1; i < argc; i++) {{");
-                    this.depth++;
-                    this.cppWriter.WriteLine("args.IndexOf<_string>(i - 1) = argv[i];");
-                    this.depth--;
-                    this.cppWriter.WriteLine("}}");
-                    this.cppWriter.WriteLine("return {0}::Main(args);", this.typeModel.FullName);
-                    this.depth--;
-                    this.cppWriter.WriteLine("}}");
-                }
+                string w = App.PreferWideChar ? "w" : null;
+
+                this.cppWriter.NewLine();
+                this.cppWriter.WriteLine("int {0}main(int argc, {0}cstring argv[]) {{", w);
+                this.depth++;
+                this.cppWriter.WriteLine("_array<{0}cstring> args = new_<array<{0}cstring>>(argc - 1);", w);
+                this.cppWriter.WriteLine("for (int i = 1; i < argc; i++) {{");
+                this.depth++;
+                this.cppWriter.WriteLine("args.IndexOf<{0}cstring>(i - 1) = argv[i];", w);
+                this.depth--;
+                this.cppWriter.WriteLine("}}");
+                this.cppWriter.WriteLine("return {0}::Run(args);", this.typeModel.FullName);
+                this.depth--;
+                this.cppWriter.WriteLine("}}");
             }
         }
 
@@ -332,16 +316,9 @@ namespace HappyCspp.Compiler
             switch (namedType.SpecialType)
             {
                 case SpecialType.System_String:
-                    if (wrapSptr)
-                    {
-                        return App.PreferWideChar ? "_wstring" : "_string";
-                    }
-                    else
-                    {
-                        return App.PreferWideChar ? "wstring" : "string";
-                    }
+                    return App.PreferWideChar ? "wstring" : "string"; // always considered as value type
                 case SpecialType.System_Char:
-                    return App.PreferWideChar ? "wchat_t" : "char";
+                    return App.PreferWideChar ? "wchar_t" : "char";
                 case SpecialType.System_Void:
                     return "void";
                 case SpecialType.System_Object:

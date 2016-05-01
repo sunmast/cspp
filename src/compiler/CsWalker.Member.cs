@@ -86,11 +86,11 @@ namespace HappyCspp.Compiler
             if (method.IsStatic && method.Name == "Main")
             {
                 var parameters = method.Declaration.ParameterList.Parameters;
-				if (!method.IsStatic || parameters.Count != 1 || parameters[0].Type.ToString() != "string[]")
+				if (!method.IsStatic || parameters.Count != 0)
                 {
 					// TODO: check return type should be void or int
 					// method.Type.Type.ToString() != "System.Int32" || 
-					Console.WriteLine("Main function must be defined as: \"static int Main(string[])\" or \"static void Main(string[])\"");
+					Console.WriteLine("Main function must be defined as: \"static int Main()\" or \"static void Main()\"");
                     throw Util.NewSyntaxNotSupportedException(method.Declaration);
                 }
 

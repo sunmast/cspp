@@ -13,7 +13,7 @@ namespace System
         public extern void Init<T>(T[] values);
     }
 
-    [Imported, BuiltInType("sys::array")]
+    [Imported, BuiltInType]
     public class GenericArray<T> // For cs2cpp compilation
     {
         public extern T this[xint index] { get; set; }

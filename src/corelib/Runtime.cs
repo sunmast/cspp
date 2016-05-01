@@ -2,91 +2,91 @@
 {
     using System.Reflection;
 
-    [Imported, BuiltInType("void")]
+    [Imported, BuiltInType]
     public struct Void
     {
 
     }
 
-    [Imported, BuiltInType("object")]
+    [Imported, BuiltInType]
     public class Object
     {
 
     }
 
-    [Imported, BuiltInType("uint8_t")]
+    [Imported, BuiltInType]
     public struct Byte
     {
 
     }
 
-    [Imported, BuiltInType("int16_t")]
+    [Imported, BuiltInType]
     public struct Int16
     {
 
     }
 
-    [Imported, BuiltInType("int32_t")]
+    [Imported, BuiltInType]
     public struct Int32
     {
 
     }
 
-    [Imported, BuiltInType("int64_t")]
+    [Imported, BuiltInType]
     public struct Int64
     {
 
     }
 
-    [Imported, BuiltInType("float")]
+    [Imported, BuiltInType]
     public struct Single
     {
 
     }
 
-    [Imported, BuiltInType("double")]
+    [Imported, BuiltInType]
     public struct Double
     {
 
     }
 
-    [Imported, BuiltInType("char", "wchar_t")]
+    [Imported, BuiltInType]
     public struct Char
     {
 
     }
 
-    [Imported, BuiltInType("bool")]
+    [Imported, BuiltInType]
     public struct Boolean
     {
 
     }
 
-    [Imported, BuiltInType("int8_t")]
+    [Imported, BuiltInType]
     public struct SByte
     {
 
     }
 
-    [Imported, BuiltInType("uint16_t")]
+    [Imported, BuiltInType]
     public struct UInt16
     {
 
     }
 
-    [Imported, BuiltInType("uint32_t")]
+    [Imported, BuiltInType]
     public struct UInt32
     {
 
     }
 
-    [Imported, BuiltInType("uint64_t")]
+    [Imported, BuiltInType]
     public struct UInt64
     {
 
     }
 
-    [Imported, BuiltInType("decimal")]
+    [Imported, BuiltInType]
     public struct Decimal
     {
 

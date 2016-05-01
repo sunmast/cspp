@@ -284,7 +284,7 @@ namespace HappyCspp.Compiler
             }
             else
             {
-                op = exprType.Type.IsValueType ? "." : "->";
+                op = exprType.Type.IsValueType || exprType.Type.Name == "String" ? "." : "->";
             }
 
             string right = memberAccessExpression.Name.Identifier.Text;
