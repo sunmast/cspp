@@ -55,7 +55,7 @@ namespace HappyCspp.Compiler
                 }
                 else
                 {
-                    return this.WrapTypeName(exprType, false);
+                    return typeWrapper.Wrap(exprType, false);
                 }
             }
             else if (expr is ParenthesizedExpressionSyntax)
@@ -297,7 +297,7 @@ namespace HappyCspp.Compiler
                 if (exprType.Type != null)
                 {
                     // It's a type
-                    return this.WrapTypeName(exprType, false);
+                    return typeWrapper.Wrap(exprType, false);
                 }
                 else
                 {
@@ -396,7 +396,7 @@ namespace HappyCspp.Compiler
                         // Because of this, any imported struct must have a default constructor too. Otherwise, import as class
                         // Note:
                         // We cannot use {} to zero members for all structs. It only works with POD structs
-                        return this.WrapTypeName(exprType, false) + "()";
+                        return typeWrapper.Wrap(exprType, false) + "()";
                 }
             }
         }
@@ -435,7 +435,7 @@ namespace HappyCspp.Compiler
         {
             // E.g. (int)3.5f
             exprType = this.semantic.GetTypeInfo(castExpression);
-            return string.Format("({0}){1}", this.WrapTypeName(exprType, true), this.ExprSyntax(castExpression.Expression));
+            return string.Format("({0}){1}", typeWrapper.Wrap(exprType, true), this.ExprSyntax(castExpression.Expression));
         }
 
         private string ExprArrayCreationSyntax(ArrayCreationExpressionSyntax arrayCreationExpression, out TypeInfo exprType)
@@ -614,12 +614,12 @@ namespace HappyCspp.Compiler
             if (exprType.Type.IsValueType)
             {
                 return string.Format("{0}({1})", // new X(y) ==> X(y)
-                    this.WrapTypeName(exprType, false),
+                    typeWrapper.Wrap(exprType, false),
                     this.SyntaxArgumentList(objectCreationExpression.ArgumentList));
             }
             else
             {
-                string type = this.WrapTypeName(exprType, true); // _<foo>, or _string/_wstring/_array
+                string type = typeWrapper.Wrap(exprType, true); // _<foo>, or _string/_wstring/_array
 
                 return string.Format("new{0}({1})", // new X(y) ==> new_<X>(y)
                     type.StartsWith("_<") ? type : "_<" + type.Substring(1) + ">",
@@ -652,7 +652,7 @@ namespace HappyCspp.Compiler
                 else
                 {
                     // Compile to x.IndexOf<ReturnType>(index)
-                    return string.Format("{0}.{1}<{2}>({3})", obj, Consts.IndexOf, this.WrapTypeName(exprType, true), args);
+                    return string.Format("{0}.{1}<{2}>({3})", obj, Consts.IndexOf, typeWrapper.Wrap(exprType, true), args);
                 }
             }
             else
@@ -676,7 +676,7 @@ namespace HappyCspp.Compiler
             // exprType is useless here since we don't support member access for primitive values except string
             exprType = new TypeInfo();// App.Compilation.GetTypeByMetadataName("xint");
 
-            return string.Format("sizeof({0})", this.WrapTypeName(sizeOfExpression.Type, false));
+            return string.Format("sizeof({0})", typeWrapper.Wrap(sizeOfExpression.Type, false));
         }
 
         private string ExprAnonymousMethodSyntax(AnonymousMethodExpressionSyntax anonymousMethodExpression)

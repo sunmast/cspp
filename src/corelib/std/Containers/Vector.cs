@@ -7,9 +7,9 @@ namespace std
     {
         public Vector() { }
 
-        public Vector(uint count) { }
+        public Vector(xint count) { }
 
-        public Vector(uint count, T val) { }
+        public Vector(xint count, T val) { }
 
         // Iterators:
 
@@ -20,40 +20,40 @@ namespace std
         public extern Iterator End { get; }
 
         [Alias("rbegin")]
-        public extern Iterator RBegin { get; }
+        public extern ReverseIterator RBegin { get; }
 
         [Alias("rend")]
-        public extern Iterator REnd { get; }
+        public extern ReverseIterator REnd { get; }
 
         // Capacity:
 
         [Alias("size")]
-        public extern uint Size { get; }
+        public extern xint Size { get; }
 
         [Alias("max_size")]
-        public extern uint MaxSize { get; }
+        public extern xint MaxSize { get; }
 
         [Alias("capacity")]
-        public extern uint Capacity { get; }
+        public extern xint Capacity { get; }
 
         [Alias("empty")]
         public extern bool IsEmpty { get; }
 
         [Alias("resize")]
-        public extern void Resize(uint n);
+        public extern void Resize(xint n);
 
         [Alias("resize")]
-        public extern void Resize(uint n, T val);
+        public extern void Resize(xint n, T val);
 
         [Alias("reserve")]
-        public extern void Reserve(uint n);
+        public extern void Reserve(xint n);
 
         [Alias("shrink_to_fit")]
         public extern void ShrinkToFit();
 
         // Element access:
 
-        public extern T this[uint n] { get; set; }
+        public extern T this[xint n] { get; set; }
 
         [Alias("front")]
         public extern T Front { get; set; }
@@ -64,7 +64,7 @@ namespace std
         // Modifiers:
 
         [Alias("assign")]
-        public extern void Assign(uint n, T val);
+        public extern void Assign(xint n, T val);
 
         [Alias("push_back")]
         public extern void PushBack(T val);
@@ -76,7 +76,7 @@ namespace std
         public extern Iterator Insert(Iterator position, T val);
 
         [Alias("insert")]
-        public extern Iterator Insert(Iterator position, uint n, T val);
+        public extern Iterator Insert(Iterator position, xint n, T val);
 
         [Alias("erase")]
         public extern Iterator Erase(Iterator position);
@@ -91,9 +91,13 @@ namespace std
         public extern void Clear();
 
         [Imported, Alias("iterator")]
-        public struct Iterator
+        public enum Iterator : int
         {
-            private Iterator(int val) { }
+        }
+
+        [Imported, Alias("reverse_iterator")]
+        public enum ReverseIterator : int
+        {
         }
     }
 }

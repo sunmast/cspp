@@ -2,11 +2,6 @@
 
 // typedef unsigned int size_t;
 
-#include <cstdio>
-#include <cstdint>
-#include <cstdlib>
-#include <cstring>
-
 #include <functional>
 #include <vector>
 #include <string>

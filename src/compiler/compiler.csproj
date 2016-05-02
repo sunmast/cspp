@@ -65,6 +65,7 @@
     <Compile Include="VariableModel.cs" />
     <Compile Include="CsProject.cs" />
     <Compile Include="CbProject.cs" />
+    <Compile Include="TypeWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

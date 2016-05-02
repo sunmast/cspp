@@ -128,7 +128,7 @@ namespace HappyCspp.Compiler
                 sb.AppendFormat(i == 0 ? "{0}<" : "_{0}<", Consts.Array);
                 if (i == arrayType.RankSpecifiers.Count - 1)
                 {
-                    sb.Append(this.WrapTypeName(arrayType.ElementType, true));
+                    sb.Append(typeWrapper.Wrap(arrayType.ElementType, true));
                 }
             }
 
@@ -236,7 +236,7 @@ namespace HappyCspp.Compiler
                 this.memberModel.Variables.Push(new VariableModel(paramType, name, this.memberModel.ScopeDepth + 1));
             }
 
-            string type = this.WrapTypeName(paramType, true);
+            string type = typeWrapper.Wrap(paramType, true);
             return type + byRef + " " + name + defaultClause;
         }
 
@@ -262,18 +262,14 @@ namespace HappyCspp.Compiler
             List<string> list = new List<string>();
             foreach (var baseType in baseList.Types)
             {
-                string baseName = this.WrapTypeName(baseType.Type, false);
-
-                // The wrapped name may contain ptr wrapper _<> for reference base types, but its not needed here
-                baseName = baseName.StartsWith("_<") ? baseName.Substring(2, baseName.Length - 3) : baseName;
-
+                string baseName = typeWrapper.Wrap(baseType.Type, false);
                 list.Add("public " + baseName);
             }
 
             return " : " + string.Join(", ", list);
         }
 
-        private string SyntaxSingleLineVariableDeclaration(VariableDeclarationSyntax variable)
+        private string SyntaxSingleLineVariableDeclaration(VariableDeclarationSyntax variable, TypeInfo t)
         {
             // Only used in for loop variables declaration which must be in single line
             // And thus its for impl, not for header
@@ -285,12 +281,12 @@ namespace HappyCspp.Compiler
                 list.Add(this.SyntaxVariableDeclarator(variableDeclarator, false, false, false));
             }
 
-            return string.Format("{0} {1}", this.WrapTypeName(variable.Type, true), string.Join(", ", list));
+            return string.Format("{0} {1}", typeWrapper.Wrap(t, true), string.Join(", ", list));
         }
 
         private string SyntaxVariableDeclaration(VariableDeclarationSyntax variableDeclaration, VariableDeclaratorSyntax variableDeclarator, bool forMember, bool forHeader, bool ignoreInitializer)
         {
-            return this.WrapTypeName(variableDeclaration.Type, true) + " " + this.SyntaxVariableDeclarator(variableDeclarator, forMember, forHeader, ignoreInitializer);
+            return typeWrapper.Wrap(variableDeclaration.Type, true) + " " + this.SyntaxVariableDeclarator(variableDeclarator, forMember, forHeader, ignoreInitializer);
         }
 
         private string SyntaxVariableDeclarator(VariableDeclaratorSyntax variable, bool forMember, bool forHeader, bool ignoreInitializer)

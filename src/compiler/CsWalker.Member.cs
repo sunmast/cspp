@@ -116,7 +116,7 @@ namespace HappyCspp.Compiler
         private void CompileMemberPropertyHeader<T>(MemberBasePropertyModel<T> property, string propName, BracketedParameterListSyntax indexerParams)
             where T : BasePropertyDeclarationSyntax
         {
-            string typeName = this.WrapTypeName(property.Declaration.Type, true);
+            string typeName = typeWrapper.Wrap(property.Declaration.Type, true);
             string indexerParamsStr = this.SyntaxBracketedParameterList(indexerParams, true);
 
             string getterSignature = string.Format(
@@ -183,7 +183,7 @@ namespace HappyCspp.Compiler
         private void CompileMemberPropertyImpl<T>(MemberBasePropertyModel<T> property, string propName, BracketedParameterListSyntax indexerParams)
             where T : BasePropertyDeclarationSyntax
         {
-            string typeName = this.WrapTypeName(property.Declaration.Type, true);
+            string typeName = typeWrapper.Wrap(property.Declaration.Type, true);
             string indexerParamsStr = this.SyntaxBracketedParameterList(indexerParams, false);
 
             string getterSignature = string.Format(
@@ -228,7 +228,7 @@ namespace HappyCspp.Compiler
         {
             this.hWriter.WriteLine(this.SyntaxTemplateTypeDeclaration(method.TypeParameterList));
 
-            string returnType = this.WrapTypeName(method.ReturnType, true);
+            string returnType = typeWrapper.Wrap(method.ReturnType, true);
             if (returnType != null) returnType += " ";
 
             string signature = string.Format("{0}{1}{2}",
@@ -252,7 +252,7 @@ namespace HappyCspp.Compiler
         private void CompileMemberMethodImpl<T>(MemberBaseMethodModel<T> method)
             where T : BaseMethodDeclarationSyntax
         {
-            string returnType = this.WrapTypeName(method.ReturnType, true);
+            string returnType = typeWrapper.Wrap(method.ReturnType, true);
             if (returnType != null) returnType += " ";
 
             string signature = string.Format("{0}{3}::{1}{2}",

@@ -20,6 +20,11 @@
     <ConsolePause>false</ConsolePause>
     <NoWarn>0660;0661;0626</NoWarn>
     <NoStdLib>true</NoStdLib>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="../compiler/bin/${ProjectConfigName}/cspp.exe corelib.csproj false" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -29,6 +34,11 @@
     <ConsolePause>false</ConsolePause>
     <NoStdLib>true</NoStdLib>
     <NoWarn>0660;0661;0626</NoWarn>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="../compiler/bin/${ProjectConfigName}/cspp.exe corelib.csproj false" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="String.cs" />

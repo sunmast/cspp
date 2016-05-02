@@ -13,7 +13,7 @@ namespace HappyCspp.Compiler
     partial class CsWalker
     {
         private CodeWriter hWriter, cppWriter, tempWriter;
-        private StringBuilder tempStringBuilder = new StringBuilder();
+        private StringBuilder tempStringBuilder = new StringBuilder(2048);
         private CodeWriter.Depth depth;
         private TypeModel typeModel;
         private MemberModel memberModel;
@@ -21,6 +21,7 @@ namespace HappyCspp.Compiler
         private int memberAccessDepth = 0;
 
         private SemanticModel semantic;
+        private TypeWrapper typeWrapper;
 
         private MemberMethodModel mainMethod;
 
@@ -28,6 +29,7 @@ namespace HappyCspp.Compiler
         {
             this.typeModel = typeModel;
             this.semantic = typeModel.SemanticModel;
+            this.typeWrapper = new TypeWrapper(typeModel.SemanticModel);
         }
 
         public void Compile(CodeWriter hWriter, CodeWriter cppWriter, CodeWriter.Depth depth)
@@ -229,7 +231,7 @@ namespace HappyCspp.Compiler
 
             this.hWriter.WriteLine(
                 "{0} (*{1}){2};",
-                this.WrapTypeName(this.semantic.GetTypeInfo(delegateDeclaration.ReturnType), true),
+                typeWrapper.Wrap(this.semantic.GetTypeInfo(delegateDeclaration.ReturnType), true),
                 delegateDeclaration.Identifier.Text,
                 this.SyntaxParameterList(delegateDeclaration.ParameterList, true));
         }
@@ -255,195 +257,6 @@ namespace HappyCspp.Compiler
 
             this.depth--;
             this.hWriter.WriteLine("}};");
-        }
-
-        private string WrapTypeName(TypeSyntax typeSyntax, bool wrapSptr, IEnumerable<UsingDirectiveSyntax> usings = null)
-        {
-            if (typeSyntax == null)
-                return null;
-			
-            TypeInfo typeInfo = this.semantic.GetTypeInfo(typeSyntax);
-            return this.WrapTypeName(typeInfo, wrapSptr, usings);
-        }
-
-        private string WrapTypeName(TypeInfo typeInfo, bool wrapSptr, IEnumerable<UsingDirectiveSyntax> usings = null)
-        {
-            // Wrap ref type with _<> if wrapSptr
-            // Change type name to its alias
-
-            if (typeInfo.Type is IArrayTypeSymbol)
-            {
-                return this.WrapArrayTypeName(typeInfo.Type as IArrayTypeSymbol, wrapSptr, usings);
-            }
-
-            INamedTypeSymbol namedType = typeInfo.Type as INamedTypeSymbol;
-            if (namedType == null)
-            {
-                return null;
-            }
-            else
-            {
-                return this.WrapNamedTypeSymbol(namedType, wrapSptr, usings);
-            }
-        }
-
-        private string WrapArrayTypeName(IArrayTypeSymbol typeInfo, bool wrapSptr, IEnumerable<UsingDirectiveSyntax> usings = null)
-        {
-            string type;
-            if (typeInfo.ElementType is IArrayTypeSymbol)
-            {
-                type = this.WrapArrayTypeName(typeInfo.ElementType as IArrayTypeSymbol, wrapSptr, usings);
-            }
-            else
-            {
-                type = this.WrapNamedTypeSymbol(typeInfo.ElementType as INamedTypeSymbol, wrapSptr, usings);
-            }
-
-            string rank = typeInfo.Rank == 1 ? null : ", " + typeInfo.Rank.ToString();
-            if (wrapSptr)
-            {
-                return string.Format("_{0}<{1}{2}>", Consts.Array, type, rank);
-            }
-            else
-            {
-                return string.Format("{0}<{1}{2}>", Consts.Array, type, rank);
-            }
-        }
-
-        private string WrapNamedTypeSymbol(INamedTypeSymbol namedType, bool wrapSptr, IEnumerable<UsingDirectiveSyntax> usings = null)
-        {
-            // Special types
-            switch (namedType.SpecialType)
-            {
-                case SpecialType.System_String:
-                    return App.PreferWideChar ? "wstring" : "string"; // always considered as value type
-                case SpecialType.System_Char:
-                    return App.PreferWideChar ? "wchar_t" : "char";
-                case SpecialType.System_Void:
-                    return "void";
-                case SpecialType.System_Object:
-                    return wrapSptr ? "_<object>" : "object";
-                case SpecialType.System_Byte:
-                    return "uint8_t";
-                case SpecialType.System_Int16:
-                    return "int16_t";
-                case SpecialType.System_Int32:
-                    return "int32_t";
-                case SpecialType.System_Int64:
-                    return "int64_t";
-                case SpecialType.System_Single:
-                    return "float";
-                case SpecialType.System_Double:
-                    return "double";
-                case SpecialType.System_Decimal:
-                    return "sys::decimal";
-                case SpecialType.System_Boolean:
-                    return "bool";
-                case SpecialType.System_SByte:
-                    return "int8_t";
-                case SpecialType.System_UInt16:
-                    return "uint16_t";
-                case SpecialType.System_UInt32:
-                    return "uint32_t";
-                case SpecialType.System_UInt64:
-                    return "uint64_t";
-            }
-
-            // Named non-generic types
-            if (!namedType.IsGenericType)
-            {
-                string name = this.GetPrintName(namedType, usings);
-                if (namedType.IsValueType || !wrapSptr)
-                {
-                    return name;
-                }
-                else
-                {
-                    return string.Format("_<{0}>", name);
-                }
-            }
-
-            // Named generic types
-            string fullName = namedType.ToString();
-            return this.WrapGenericNamedTypeSymbol(fullName, wrapSptr, usings);
-        }
-
-        private string WrapGenericNamedTypeSymbol(string fullName, bool wrapSptr, IEnumerable<UsingDirectiveSyntax> usings = null)
-        {
-            INamedTypeSymbol namedType;
-            int index = fullName.IndexOf('<');
-            if (index < 0)
-            {
-                namedType = App.Compilation.GetTypeByMetadataName(fullName);
-                return this.WrapNamedTypeSymbol(namedType, wrapSptr, usings);
-            }
-
-            List<string> list = new List<string>();
-            string typeNames = fullName.Substring(index, fullName.Length - index);
-
-            int depth = 0;
-
-            for (int i = 0, j = 0; i < typeNames.Length; i++)
-            {
-                char c = typeNames[i];
-                if (c == '<')
-                {
-                    depth++;
-
-                    if (depth == 1)
-                    {
-                        j = i + 1;
-                    }
-
-                    continue;
-                }
-
-                if ((c == ',' || c == '>') && depth == 1)
-                {
-                    string typeArg = typeNames.Substring(j, i - j).Trim();
-
-                    if (Consts.PrimitiveDatatypes.ContainsKey(typeArg))
-                    {
-                        typeArg = Consts.PrimitiveDatatypes[typeArg];
-                    }
-
-                    string wrappedTypeArg = this.WrapGenericNamedTypeSymbol(typeArg, wrapSptr, usings);
-                    list.Add(wrappedTypeArg);
-
-                    j = i + 1;
-                }
-
-                if (c == '>')
-                    depth--;
-            }
-
-            string typeKey = fullName.Substring(0, index) + "`" + list.Count;
-            namedType = App.Compilation.GetTypeByMetadataName(typeKey);
-
-            string name = this.GetPrintName(namedType, usings);
-
-            if (namedType.IsValueType || !wrapSptr)
-            {
-                return string.Format("{0}<{1}>", name, string.Join(", ", list));
-            }
-            else
-            {
-                return string.Format("_<{0}<{1}>>", name, string.Join(", ", list));
-            }
-        }
-
-        private string GetPrintName(INamedTypeSymbol namedType, IEnumerable<UsingDirectiveSyntax> usings)
-        {
-            string name = Util.GetSymbolAlias(namedType.GetAttributes()) ?? namedType.Name;
-            string ns = string.IsNullOrEmpty(namedType.ContainingSymbol.Name) ? null : namedType.ContainingSymbol.ToString().Replace(".", "::");
-
-            if (string.IsNullOrEmpty(name))
-                return ns;
-            if (string.IsNullOrEmpty(ns))
-                return name;
-
-            // TODO: lookup usings and shorter name
-            return ns + "::" + name;
         }
     }
 }

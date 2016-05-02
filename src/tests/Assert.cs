@@ -10,6 +10,7 @@ namespace HappyCspp.Tests
         {
             string ret = place.CStr;
             stack.PushBack(ret);
+
             return ret;
         }
 

@@ -102,6 +102,16 @@ namespace HappyCspp.Tests
             Assert.Equals(2, array2DInJaggedArray.Length, "The length of array2DInJaggedArray should be 2");
             Assert.Equals(60, array2DInJaggedArray[1][1,2], "The element at [1][1,2] of array2DInJaggedArray should be 60");
 
+            std.Vector<string[]> v = new std.Vector<string[]>();
+
+            for (var it = v.Begin; it != v.End; it++)
+            {
+            }
+
+            for (var it = v.RBegin; it != v.REnd; it++)
+            {
+            }
+
             #endregion
             return true;
         }
