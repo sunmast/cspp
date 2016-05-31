@@ -2,91 +2,91 @@
 {
     using System.Reflection;
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Void
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public class Object
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Byte
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Int16
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Int32
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Int64
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Single
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Double
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Char
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Boolean
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct SByte
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct UInt16
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct UInt32
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct UInt64
     {
 
     }
 
-    [Imported, BuiltInType]
+    [Imported]
     public struct Decimal
     {
 

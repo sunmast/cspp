@@ -16,6 +16,7 @@ namespace HappyCspp.Compiler
         private StringBuilder tempStringBuilder = new StringBuilder(2048);
         private CodeWriter.Depth depth;
         private TypeModel typeModel;
+        private CompilerConfig config;
         private MemberModel memberModel;
 
         private int memberAccessDepth = 0;
@@ -25,11 +26,13 @@ namespace HappyCspp.Compiler
 
         private MemberMethodModel mainMethod;
 
-        public CsWalker(TypeModel typeModel)
+        public CsWalker(TypeModel typeModel, CompilerConfig config)
         {
             this.typeModel = typeModel;
             this.semantic = typeModel.SemanticModel;
-            this.typeWrapper = new TypeWrapper(typeModel.SemanticModel);
+            this.typeWrapper = new TypeWrapper(typeModel.SemanticModel, config);
+
+            this.config = config;
         }
 
         public void Compile(CodeWriter hWriter, CodeWriter cppWriter, CodeWriter.Depth depth)
@@ -107,7 +110,7 @@ namespace HappyCspp.Compiler
             if (this.mainMethod != null)
             {
                 // Hard coded main definition
-                string w = App.PreferWideChar ? "w" : null;
+                string w = config.PreferWideChar ? "w" : null;
 
                 this.cppWriter.NewLine();
                 this.cppWriter.WriteLine("int {0}main(int argc, {0}cstring argv[]) {{", w);

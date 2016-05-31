@@ -3,7 +3,7 @@
     /// <summary>
     /// A mutable string
     /// </summary>
-    [Imported, BuiltInType]
+    [Imported]
     public class String
     {
         public String(string str) { }
@@ -38,7 +38,7 @@
 /// <summary>
 /// A constant string
 /// </summary>
-[System.Imported, System.BuiltInType, System.Alias("cstring", "wcstring")]
+[System.Imported, System.Alias("cstring", "wcstring")]
 public struct cstring
 {
     public static extern implicit operator string(cstring value);
@@ -50,7 +50,7 @@ public struct cstring
 /// A mutable or constant string
 /// This should only be used as a parameter type to allow passing different types of strings to a function
 /// </summary>
-[System.Imported, System.BuiltInType, System.Alias("xstring", "wxstring")]
+[System.Imported, System.Alias("xstring", "wxstring")]
 public struct xstring
 {
     public static extern implicit operator xstring(cstring value);

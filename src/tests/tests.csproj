@@ -23,7 +23,7 @@
     <NoWarn>0219</NoWarn>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="../compiler/bin/${ProjectConfigName}/cspp.exe tests.csproj false" />
+        <Command type="AfterBuild" command="../compiler/bin/${ProjectConfigName}/cspp.exe tests.csproj ../compiler/CompilerConfig.gcc.xml" externalConsole="True" pauseExternalConsole="True" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

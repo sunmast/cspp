@@ -10,7 +10,7 @@ namespace HappyCspp.Compiler
 {
     abstract class MemberModel
     {
-        private string alias;
+        private string alias, altAlias;
         private bool isAttributesProcessed;
 
 		public TypeModel TypeModel { get; private set; }
@@ -54,6 +54,19 @@ namespace HappyCspp.Compiler
                 }
 
                 return this.alias;
+            }
+        }
+
+        public string AltAlias
+        {
+            get
+            {
+                if (!this.isAttributesProcessed)
+                {
+                    this.ProcessAttributes();
+                }
+
+                return this.altAlias;
             }
         }
 
@@ -110,9 +123,9 @@ namespace HappyCspp.Compiler
                     foreach (var attr in attrList.Attributes)
                     {
                         string name = attr.Name.ToString();
-                        if (name == "Alias" || name == "AliasAttribute")
+                        if (name == "Alias" || name == "AliasAttribute" || name == "System.Alias" || name == "System.AliasAttribute")
                         {
-                            this.alias = Util.GetAliasOrBuiltInType(attr.ArgumentList.Arguments);
+                            Util.GetAliases(attr.ArgumentList.Arguments, out this.alias, out this.altAlias);
                         }
                     }
                 }

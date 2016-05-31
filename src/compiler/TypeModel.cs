@@ -13,10 +13,10 @@ namespace HappyCspp.Compiler
 {
     abstract class TypeModel // e.g. class Foo<T>
     {
-        private bool isAttributesProcessed, isImported, isBuiltIn;
+        private bool isAttributesProcessed, isImported;
         private NamespaceDeclarationSyntax nsDeclaration;
 
-        private string nsName, fullName, alias;
+        private string nsName, fullName, alias, altAlias;
         private string[] nsNameParts;
 
         public SemanticModel SemanticModel{ get; private set; }
@@ -87,6 +87,19 @@ namespace HappyCspp.Compiler
             }
         }
 
+        public string AltAlias
+        {
+            get
+            {
+                if (!this.isAttributesProcessed)
+                {
+                    this.ProcessAttributes();
+                }
+
+                return this.altAlias;
+            }
+        }
+
         public bool IsImported
         {
             get
@@ -97,19 +110,6 @@ namespace HappyCspp.Compiler
                 }
 
                 return this.isImported;
-            }
-        }
-
-        public bool IsBuiltIn
-        {
-            get
-            {
-                if (!this.isAttributesProcessed)
-                {
-                    this.ProcessAttributes();
-                }
-
-                return this.isBuiltIn;
             }
         }
 
@@ -241,11 +241,7 @@ namespace HappyCspp.Compiler
                         }
                         else if (name == "Alias" || name == "AliasAttribute" || name == "System.Alias" || name == "System.AliasAttribute")
                         {
-                            this.alias = Util.GetAliasOrBuiltInType(attr.ArgumentList.Arguments);
-                        }
-                        else if (name == "BuiltInType" || name == "BuiltInTypeAttribute" || name == "System.BuiltInType" || name == "System.BuiltInTypeAttribute")
-                        {
-                            this.isBuiltIn = true;
+                            Util.GetAliases(attr.ArgumentList.Arguments, out this.alias, out this.altAlias);
                         }
                     }
                 }

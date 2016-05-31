@@ -43,7 +43,7 @@ namespace HappyCspp.Compiler
                     if (member.Name == name)
                     {
                         exprType = member.Type;
-                        return member.Alias ?? member.Name;
+                        return member.Name;
                     }
                 }
 
@@ -235,7 +235,7 @@ namespace HappyCspp.Compiler
                     txt = string.Format("R\"{0}({1}){0}\"", delimiter, txt);
                 }
 
-                return App.PreferWideChar ? "L" + txt : txt;
+                return config.PreferWideChar ? "L" + txt : txt;
             }
             else
             {
@@ -320,7 +320,7 @@ namespace HappyCspp.Compiler
 				
             foreach (var member in members)
             {
-                string alias = Util.GetSymbolAlias(member.GetAttributes());
+                string alias = Util.GetSymbolAlias(config.PreferWideChar, member.GetAttributes());
 
                 if (member.IsStatic)
                     op = "::";

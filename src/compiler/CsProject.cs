@@ -16,6 +16,16 @@ namespace HappyCspp.Compiler
 
         public string DefaultNamespace { get; private set; }
 
+        public string OutputType { get; private set; }
+
+        public bool IsLibrary
+        {
+            get
+            {
+                return this.OutputType == "Library";
+            }
+        }
+
         public CsProject(string projectFile)
         {
             XmlDocument doc = new XmlDocument();
@@ -44,6 +54,8 @@ namespace HappyCspp.Compiler
             this.DestinationFolder = Path.Combine(dir, "cpp");
 
             this.DefaultNamespace = doc.SelectSingleNode("//msbuild:RootNamespace", nsmgr).InnerText;
+
+            this.OutputType = doc.SelectSingleNode("//msbuild:OutputType", nsmgr).InnerText;
         }
     }
 }

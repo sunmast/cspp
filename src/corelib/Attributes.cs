@@ -42,23 +42,17 @@
     }
 
     [Imported]
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class BuiltInTypeAttribute : Attribute
-    {
-    }
-
-    [Imported]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum | AttributeTargets.Delegate | AttributeTargets.Struct | AttributeTargets.Method | AttributeTargets.Property)]
     public class AliasAttribute : Attribute
     {
         public string Alias { get; private set; }
 
-        public string AliasForWideChar { get; private set; }
+        public string AltAlias { get; private set; }
 
-        public AliasAttribute(string alias, string aliasForWideChar = null)
+        public AliasAttribute(string alias, string altAlias = null)
         {
             this.Alias = alias;
-            this.AliasForWideChar = aliasForWideChar;
+            this.AltAlias = altAlias;
         }
     }
 

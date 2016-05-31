@@ -22,7 +22,7 @@
     <NoStdLib>true</NoStdLib>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="../compiler/bin/${ProjectConfigName}/cspp.exe corelib.csproj false" />
+        <Command type="AfterBuild" command="../compiler/bin/${ProjectConfigName}/cspp.exe corelib.csproj ../compiler/CompilerConfig.gcc.xml" externalConsole="True" pauseExternalConsole="True" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

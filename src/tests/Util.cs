@@ -7,7 +7,7 @@ namespace HappyCspp.Tests
         public static void WriteLine(xstring str)
         {
             fmt.Print(str);
-            fmt.Print(Environment.NewLine);
+            fmt.Print("\r\n");
         }
     }
 }

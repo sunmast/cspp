@@ -8,10 +8,12 @@ namespace HappyCspp.Compiler
     public class TypeWrapper
     {
         private SemanticModel semantic;
+        private CompilerConfig config;
 
-        public TypeWrapper(SemanticModel semantic)
+        public TypeWrapper(SemanticModel semantic, CompilerConfig config)
         {
             this.semantic = semantic;
+            this.config = config;
         }
 
         public string Wrap(TypeSyntax typeSyntax, bool wrapSptr, IEnumerable<UsingDirectiveSyntax> usings = null)
@@ -72,9 +74,9 @@ namespace HappyCspp.Compiler
             switch (namedType.SpecialType)
             {
                 case SpecialType.System_String:
-                    return App.PreferWideChar ? "wstring" : "string"; // always considered as value type
+                    return config.PreferWideChar ? "wstring" : "string"; // always considered as value type
                 case SpecialType.System_Char:
-                    return App.PreferWideChar ? "wchar_t" : "char";
+                    return config.PreferWideChar ? "wchar_t" : "char";
                 case SpecialType.System_Void:
                     return "void";
                 case SpecialType.System_Object:
@@ -119,7 +121,7 @@ namespace HappyCspp.Compiler
                 }
             }
 
-            string name = Util.GetSymbolAlias(namedType.GetAttributes()) ?? namedType.Name;
+            string name = Util.GetSymbolAlias(config.PreferWideChar, namedType.GetAttributes()) ?? namedType.Name;
 
             // TODO: lookup usings and shorter name
             string ret = containingType == null ? name : (containingType + "::" + name);
