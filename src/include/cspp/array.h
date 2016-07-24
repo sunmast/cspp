@@ -70,7 +70,7 @@ public:
         else
         {
             uint32_t len = 1;
-            for(int i = 0; i < D; i++)
+            for(uint32_t i = 0; i < D; i++)
             {
                 len *= d[i];
             }

@@ -26,6 +26,8 @@ namespace HappyCspp.Compiler
 
         protected void Execute(string program, string arguments)
         {
+            Console.WriteLine("{0} {1}", program, arguments);
+
             Process p = Process.Start(program, arguments);
             p.WaitForExit();
             if (p.ExitCode != 0)
@@ -48,14 +50,15 @@ namespace HappyCspp.Compiler
 
             this.linkCmd =
                 string.Concat(config.LinkerOptions.Select(x => " " + x)) +
+                " {0}" +
                 string.Concat(config.Libraries.Select(x => " " + x)) +
-                " {0} -o bin/" + config.Name + "/{1}" +
+                " -o bin/" + config.Name + "/{1}" +
                 (Environment.OSVersion.Platform.ToString().StartsWith("Win") ? ".exe" : "");
 
             this.libLinkCmd =
                 string.Concat(config.LibLinkerOptions.Select(x => " -" + x)) +
-                " bin/" + config.Name + "/{1}.a" +
-                string.Concat(config.Libraries.Select(x => " " + x)) + " {0}";
+                " bin/" + config.Name + "/{1}.a {0}" +
+                string.Concat(config.Libraries.Select(x => " " + x));
         }
 
         protected override string[] Compile(string[] inputs)
