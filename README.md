@@ -1,62 +1,8 @@
 CS++
 ======
 
-Code C++ with C\# *productivity!* Run C\# with C++ *performance!*
+CS++ == C\# *productivity!* + C\# with C++ *performance!*
 
-Status Update (Oct 29, 2015)
-----------------------------
-
-- Working on a ARC implemenation that's comparable to tracing GC in terms of CPU throughput.
-
-- All other work are pending.
-
-
-Status Update (July 7, 2015)
-----------------------------
-
--   Initial source code published: compiler, corelib, includes, and helloworld
-    sample
-
--   Entire tool chain running on Windows & Linux (VC++/g++ compiler with -std=c++11)
-
-Next Update
------------
-
--   Unit tests
-
--   Port to Mac OS
-
--   Version 0.1 release
-
-Short Term Goals
-----------------
-
--   Stabilization
-
--   Import C/C++ standard libraries
-
--   Import Boost libraries
-
--   Version 1.0 release
-
-Secondary Goals
----------------
-
--   Support advanced C\# features like yield, await, LINQ, etc.
-
--   Compile Roslyn source code and build a native compiler
-
--   Import OS specific libraries
-
--   TBD
-
-Memory Management
------------------------------------
-
-In short, its based on an optimized reference counter algorithm in both compile
-time and runtime.
-
-https://github.com/sunmast/cs2cpp/wiki/Notes#memory-management
 
 Hello World
 -----------
