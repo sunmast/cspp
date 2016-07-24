@@ -1,7 +1,7 @@
 CS++
 ======
 
-CS++ == C\# *productivity!* + C\# with C++ *performance!*
+CS++ == C\# *productivity* with C++ *performance!*
 
 
 Hello World
