@@ -328,7 +328,11 @@ namespace HappyCspp.Compiler
                 // Properties: compile to get_X / set_X
                 // Members with aliases: compiled to alias
                 // Properties with alias: compiled to alias as-is. No get_/set_ prefixes
-                if (member is IFieldSymbol)
+                if (member is ITypeSymbol)
+                {
+                    right = typeWrapper.Wrap(member as ITypeSymbol, false);
+                }
+                else if (member is IFieldSymbol)
                 {
                     right = alias ?? member.Name;
                 }

@@ -24,6 +24,7 @@
                 fmt.Print("=== test completed: {0} ===\n\n", test.Name);
             }
 
+            C.Debug.Assert(true);
             return 0;
         }
     }

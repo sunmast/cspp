@@ -42,7 +42,7 @@
     }
 
     [Imported]
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum | AttributeTargets.Delegate | AttributeTargets.Struct | AttributeTargets.Method | AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum | AttributeTargets.Delegate | AttributeTargets.Struct | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field)]
     public class AliasAttribute : Attribute
     {
         public string Alias { get; private set; }
@@ -60,6 +60,18 @@
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum | AttributeTargets.Delegate | AttributeTargets.Struct)]
     public class ImportedAttribute : Attribute
     {
+    }
+
+    [Imported]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum | AttributeTargets.Delegate | AttributeTargets.Struct | AttributeTargets.Method | AttributeTargets.Field)]
+    public class HeaderAttribute : Attribute
+    {
+        public string Header { get; private set; }
+
+        public HeaderAttribute(string header)
+        {
+            this.Header = header;
+        }
     }
 
     [AttributeUsage(AttributeTargets.Field, Inherited = false)]

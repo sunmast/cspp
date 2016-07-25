@@ -124,7 +124,7 @@ namespace HappyCspp.Compiler
             string name = Util.GetSymbolAlias(config.PreferWideChar, namedType.GetAttributes()) ?? namedType.Name;
 
             // TODO: lookup usings and shorter name
-            string ret = containingType == null ? name : (containingType + "::" + name);
+            string ret = string.IsNullOrEmpty(containingType) ? name : (containingType + "::" + name);
 
             List<string> typeArgs = new List<string>();
             foreach (var typeArg in namedType.TypeArguments)
