@@ -68,9 +68,12 @@
     {
         public string Header { get; private set; }
 
-        public HeaderAttribute(string header)
+        public string AltHeader { get; private set; }
+
+        public HeaderAttribute(string header, string altHeader = null)
         {
             this.Header = header;
+            this.AltHeader = altHeader;
         }
     }
 
@@ -79,6 +82,43 @@
     public sealed class WeakRefAttribute : Attribute
     {
 
+    }
+
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method, Inherited = false)]
+    [Imported]
+    public sealed class AsciiStringAttribute : Attribute
+    {
+        
+    }
+
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    [Imported]
+    public sealed class ZerosAttribute : Attribute
+    {
+        public int Count;
+
+        public ZerosAttribute(int count)
+        {
+            this.Count = count;
+        }
+    }
+
+    [Imported]
+    public enum ReturnType
+    {
+        Pointer
+    }
+
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    [Imported]
+    public sealed class ReturnTypeAttribute : Attribute
+    {
+        public ReturnType ReturnType;
+        
+        public ReturnTypeAttribute(ReturnType returnType)
+        {
+            this.ReturnType = returnType;
+        }
     }
 }
 
