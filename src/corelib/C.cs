@@ -564,8 +564,8 @@ public static class C
         /// If the function failed to set a new locale, this is not modified and a null pointer is returned.</returns>
         /// <param name="category">Portion of the locale affected.</param>
         /// <param name="locale">C string containing the name of a C locale.</param>
-        [Header("clocale"), Alias("setlocale"), AsciiString]
-        public static extern string SetLocale(int category, [AsciiString]string locale);
+        [Header("clocale"), Alias("setlocale"), Return(RtType.AsciiStr)]
+        public static extern string SetLocale(int category, [Param(RtType.AsciiStr)]string locale);
 
         // TODO:
         // struct lconv* localeconv (void);
@@ -1038,7 +1038,7 @@ public static class C
         public static extern ldouble copysign(ldouble x, ldouble y);
 
         [Header("cmath")]
-        public static extern double nan([AsciiString]string tagp);
+        public static extern double nan([Param(RtType.AsciiStr)]string tagp);
 
         [Header("cmath")]
         public static extern float nextafter(float x, float y);
@@ -1566,7 +1566,7 @@ public static class C
         /// <returns>A time_t value corresponding to the calendar time passed as argument. If the calendar time cannot be represented, a value of -1 is returned.</returns>
         /// <param name="time">Pointer to a tm structure that contains a calendar time broken down into its components (see struct tm).</param>
         [Header("ctime"), Alias("mktime")]
-        public static extern long MakeTime(ref DateTime time);
+        public static extern long MakeTime([In][Param(RtType.Ptr)]DateTime time);
 
         /// <summary>
         /// Get the current calendar time as a value of type time_t.
@@ -1583,36 +1583,28 @@ public static class C
         public static extern long GetTime();
 
         /// <summary>
-        /// Convert tm structure to string
-        /// </summary>
-        /// <returns>A C-string containing the date and time information in a human-readable format. The returned value points to an internal array whose validity or value may be altered by any subsequent call to asctime or ctime.</returns>
-        /// <param name="time">Pointer to a tm structure that contains a calendar time broken down into its components (see struct tm).</param>
-        [Header("ctime"), Alias("asctime")]
-        public static extern string ConvertToString(ref DateTime time);
-
-        /// <summary>
         /// Convert time_t value to string
         /// </summary>
         /// <returns>A C-string containing the date and time information in a human-readable format. The returned value points to an internal array whose validity or value may be altered by any subsequent call to asctime or ctime.</returns>
         /// <param name="time">Pointer to an object of type time_t that contains a time value.</param>
-        [Header("ctime"), Alias("ctime")]
-        public static extern string ConvertToString(ref long time);
+        [Header("ctime"), Alias("ctime"), Return(RtType.AsciiStr)]
+        public static extern string GetString([In][Param(RtType.Ptr)]long time);
 
         /// <summary>
         /// Convert time_t to tm as UTC time
         /// </summary>
         /// <returns>The UTC time.</returns>
         /// <param name="time">Pointer to an object of type time_t that contains a time value.</param>
-        [Header("ctime"), Alias("gmtime"), ReturnType(ReturnType.Pointer)]
-        public static extern DateTime GetUtcTime(ref long time);
+        [Header("ctime"), Alias("gmtime"), Return(RtType.Ptr)]
+        public static extern DateTime GetUtcTime([In][Param(RtType.Ptr)]long time);
 
         /// <summary>
         /// Convert time_t to tm as local time
         /// </summary>
         /// <returns>The local time.</returns>
         /// <param name="time">Pointer to an object of type time_t that contains a time value.</param>
-        [Header("ctime"), Alias("localtime"), ReturnType(ReturnType.Pointer)]
-        public static extern DateTime GetLocalTime(ref long time);
+        [Header("ctime"), Alias("localtime"), Return(RtType.Ptr)]
+        public static extern DateTime GetLocalTime([In][Param(RtType.Ptr)]long time);
     }
 
     #endregion // ctime

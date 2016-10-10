@@ -53,6 +53,7 @@
     <Compile Include="fmt.cs" />
     <Compile Include="C.cs" />
     <Compile Include="LongDouble.cs" />
+    <Compile Include="ImpAttributes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

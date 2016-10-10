@@ -24,8 +24,7 @@
               Delegate | ReturnValue | GenericParameter,
     }
 
-    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Class, Inherited = true)]
     public sealed class AttributeUsageAttribute : Attribute
     {
         public AttributeTargets ValidOn { get; private set; }
@@ -40,86 +39,6 @@
             this.Inherited = true;
         }
     }
-
-    [Imported]
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum | AttributeTargets.Delegate | AttributeTargets.Struct | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field)]
-    public class AliasAttribute : Attribute
-    {
-        public string Alias { get; private set; }
-
-        public string AltAlias { get; private set; }
-
-        public AliasAttribute(string alias, string altAlias = null)
-        {
-            this.Alias = alias;
-            this.AltAlias = altAlias;
-        }
-    }
-
-    [Imported]
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum | AttributeTargets.Delegate | AttributeTargets.Struct)]
-    public class ImportedAttribute : Attribute
-    {
-    }
-
-    [Imported]
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum | AttributeTargets.Delegate | AttributeTargets.Struct | AttributeTargets.Method | AttributeTargets.Field)]
-    public class HeaderAttribute : Attribute
-    {
-        public string Header { get; private set; }
-
-        public string AltHeader { get; private set; }
-
-        public HeaderAttribute(string header, string altHeader = null)
-        {
-            this.Header = header;
-            this.AltHeader = altHeader;
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Field, Inherited = false)]
-    [Imported]
-    public sealed class WeakRefAttribute : Attribute
-    {
-
-    }
-
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method, Inherited = false)]
-    [Imported]
-    public sealed class AsciiStringAttribute : Attribute
-    {
-        
-    }
-
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    [Imported]
-    public sealed class ZerosAttribute : Attribute
-    {
-        public int Count;
-
-        public ZerosAttribute(int count)
-        {
-            this.Count = count;
-        }
-    }
-
-    [Imported]
-    public enum ReturnType
-    {
-        Pointer
-    }
-
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    [Imported]
-    public sealed class ReturnTypeAttribute : Attribute
-    {
-        public ReturnType ReturnType;
-        
-        public ReturnTypeAttribute(ReturnType returnType)
-        {
-            this.ReturnType = returnType;
-        }
-    }
 }
 
 #region System.Reflection
@@ -129,7 +48,6 @@ namespace System.Reflection
     [Imported]
     public sealed class DefaultMemberAttribute
     {
-
         private string _memberName;
 
         public DefaultMemberAttribute(string memberName)
@@ -146,8 +64,7 @@ namespace System.Reflection
         }
     }
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyCopyrightAttribute : Attribute
     {
 
@@ -168,8 +85,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyTrademarkAttribute : Attribute
     {
 
@@ -190,8 +106,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyProductAttribute : Attribute
     {
 
@@ -212,8 +127,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyCompanyAttribute : Attribute
     {
 
@@ -234,8 +148,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyDescriptionAttribute : Attribute
     {
 
@@ -256,8 +169,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyTitleAttribute : Attribute
     {
 
@@ -277,8 +189,7 @@ namespace System.Reflection
         }
     }
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyConfigurationAttribute : Attribute
     {
 
@@ -299,8 +210,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyFileVersionAttribute : Attribute
     {
 
@@ -321,8 +231,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyInformationalVersionAttribute : Attribute
     {
         public AssemblyInformationalVersionAttribute(string informationalVersion)
@@ -334,8 +243,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyCultureAttribute : Attribute
     {
         public AssemblyCultureAttribute(string culture)
@@ -347,8 +255,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyVersionAttribute : Attribute
     {
         public AssemblyVersionAttribute(string version)
@@ -360,8 +267,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyKeyFileAttribute : Attribute
     {
         public AssemblyKeyFileAttribute(string keyFile)
@@ -373,8 +279,7 @@ namespace System.Reflection
     }
 
 
-    [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
-    [Imported]
+    [Imported, AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyDelaySignAttribute : Attribute
     {
         public AssemblyDelaySignAttribute(bool delaySign)

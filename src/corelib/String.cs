@@ -38,7 +38,7 @@
 /// <summary>
 /// A constant string
 /// </summary>
-[System.Imported, System.Alias("cstring", "wcstring")]
+[Imported, Alias("cstring", "wcstring")]
 public struct cstring
 {
     public static extern implicit operator string(cstring value);
@@ -50,12 +50,12 @@ public struct cstring
 /// A mutable or constant string
 /// This should only be used as a parameter type to allow passing different types of strings to a function
 /// </summary>
-[System.Imported, System.Alias("xstring", "wxstring")]
+[Imported, Alias("xstring", "wxstring")]
 public struct xstring
 {
     public static extern implicit operator xstring(cstring value);
     public static extern implicit operator xstring(string value);
 
-    [System.Alias("c_str")]
+    [Alias("c_str")]
     public extern cstring CStr { get; }
 }

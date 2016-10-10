@@ -209,11 +209,11 @@ namespace HappyCspp.Compiler
 
             if (parameter.Modifiers.Count > 0)
             {
-                // give params x[] a default value null
                 foreach (var m in parameter.Modifiers)
                 {
                     if (m.Text == "params" && forHeader && defaultClause == null)
                     {
+                        // give params x[] a default value null
                         defaultClause = " = nullptr";
                         break;
                     }
@@ -352,32 +352,49 @@ namespace HappyCspp.Compiler
             return string.Join(", ", list);
         }
 
-        private string SyntaxArgumentList(ArgumentListSyntax argumentList)
+        private string SyntaxRtArgumentList(ArgumentListSyntax argumentList, List<TypeInfo> typeParameterList)
         {
             if (argumentList == null || argumentList.Arguments.Count == 0)
                 return null;
 
+            var typeParameterEnum = typeParameterList.GetEnumerator();
+
             List<string> list = new List<string>();
             foreach (var arg in argumentList.Arguments)
             {
-
-                list.Add(this.SyntaxArgument(arg));
+                typeParameterEnum.MoveNext();
+                list.Add(this.SyntaxRtArgument(arg,typeParameterEnum.Current));
             }
 
             return list.Count > 0 ? string.Join(", ", list) : null;
         }
 
-        private string SyntaxArgument(ArgumentSyntax arg)
+        private string SyntaxRtArgument(ArgumentSyntax arg, TypeInfo typeParameter)
         {
             if (arg.NameColon != null)
                 throw Util.NewSyntaxNotSupportedException(arg.NameColon);
 
+            string modifier = null;
+
             if (!string.IsNullOrEmpty(arg.RefOrOutKeyword.Text))
             {
-                // Passing parameter by reference, but C++ compiler will take care of it by looking parameter definition in the function
+                // Passing parameter by reference
+                modifier = "&";
             }
 
-            return this.ExprSyntax(arg.Expression);
+            if (typeParameter.Type != null)
+            {
+                foreach (var attr in typeParameter.Type.GetAttributes())
+                {
+                    string name = attr.AttributeClass.Name;
+                    if (name == "Param" || name == "ParamAttribute")
+                    {
+                        var paramType = attr.ConstructorArguments.First().Value;
+                    }
+                }
+            }
+
+            return modifier + this.ExprSyntax(arg.Expression);
         }
     }
 }

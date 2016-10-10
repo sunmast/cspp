@@ -235,11 +235,11 @@ namespace HappyCspp.Compiler
                     foreach (var attr in attrList.Attributes)
                     {
                         string name = attr.Name.ToString();
-                        if (name == "Imported" || name == "ImportedAttribute" || name == "System.Imported" || name == "System.ImportedAttribute")
+                        if (name == "Imported" || name == "ImportedAttribute")
                         {
                             this.isImported = true;
                         }
-                        else if (name == "Alias" || name == "AliasAttribute" || name == "System.Alias" || name == "System.AliasAttribute")
+                        else if (name == "Alias" || name == "AliasAttribute")
                         {
                             Util.GetAliases(attr.ArgumentList.Arguments, out this.alias, out this.altAlias);
                         }

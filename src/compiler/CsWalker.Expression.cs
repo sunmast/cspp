@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -272,25 +273,27 @@ namespace HappyCspp.Compiler
             }
 
             ExpressionSyntax leftExpr = memberAccessExpression.Expression;
-            string left = this.ExprSyntax(leftExpr, out exprType);
+            TypeInfo leftType;
+            string left = this.ExprSyntax(leftExpr, out leftType);
             string op;
+
             if (left == "this")
             {
                 op = "->";
             }
-            else if (exprType.Type == null)
+            else if (leftType.Type == null)
             {
                 op = "::";
             }
             else
             {
-                op = exprType.Type.IsValueType || exprType.Type.Name == "String" ? "." : "->";
+                op = leftType.Type.IsValueType || leftType.Type.Name == "String" ? "." : "->";
             }
 
             string right = memberAccessExpression.Name.Identifier.Text;
             ImmutableArray<ISymbol> members = ImmutableArray<ISymbol>.Empty;
 
-            if (exprType.Type == null)
+            if (leftType.Type == null)
             {
                 // Left is NS, right must be NS or type
                 exprType = this.semantic.GetTypeInfo(memberAccessExpression);
@@ -305,58 +308,66 @@ namespace HappyCspp.Compiler
                     return left + "::" + right;
                 }
             }
-            else if (exprType.Type is IArrayTypeSymbol)
+            else if (leftType.Type is IArrayTypeSymbol)
             {
                 members = App.ArrayType.GetMembers(right);
             }
-            else if (exprType.Type is INamespaceOrTypeSymbol)
+            else if (leftType.Type is INamespaceOrTypeSymbol)
             {
-                members = (exprType.Type as INamespaceOrTypeSymbol).GetMembers(right);
+                members = (leftType.Type as INamespaceOrTypeSymbol).GetMembers(right);
             }
             else
             {
                 Util.NewSyntaxNotSupportedException(memberAccessExpression);
             }
-				
-            foreach (var member in members)
+
+            bool isStatic;
+            string alias;
+
+            ITypeSymbol typeSymbol;
+            IFieldSymbol fieldSymbol;
+            IPropertySymbol propertySymbol;
+            IMethodSymbol methodSymbol;
+
+            this.ResolveMember(
+                members, this.currentParameterListTypes,
+                out isStatic, out alias,
+                out typeSymbol, out fieldSymbol, out propertySymbol, out methodSymbol);
+
+            if (isStatic)
             {
-                string alias = Util.GetSymbolAlias(config.PreferWideChar, member.GetAttributes());
+                op = "::";
+            }
 
-                if (member.IsStatic)
-                    op = "::";
-
-                // Properties: compile to get_X / set_X
-                // Members with aliases: compiled to alias
-                // Properties with alias: compiled to alias as-is. No get_/set_ prefixes
-                if (member is ITypeSymbol)
+            // Properties: compile to get_X / set_X
+            // Members with aliases: compiled to alias
+            // Properties with alias: compiled to alias as-is. No get_/set_ prefixes
+            if(typeSymbol != null)
+            {
+                right = typeWrapper.Wrap(typeSymbol, false);
+            }
+            else if(fieldSymbol != null)
+            {
+                right = alias ?? fieldSymbol.Name;
+            }
+            else if(propertySymbol != null)
+            {
+                if (!isLeftValue || this.memberAccessDepth > 1)
                 {
-                    right = typeWrapper.Wrap(member as ITypeSymbol, false);
-                }
-                else if (member is IFieldSymbol)
-                {
-                    right = alias ?? member.Name;
-                }
-                else if (member is IPropertySymbol)
-                {
-                    if (!isLeftValue || this.memberAccessDepth > 1)
-                    {
-                        right = (alias ?? Consts.GetterPrefix + member.Name) + "()";
-                    }
-                    else
-                    {
-                        right = (alias ?? Consts.SetterPrefix + member.Name) + "("; // x.Prop = Y; will be compiled to x.set_Prop(Y);
-                    }
-                }
-                else if (member is IMethodSymbol)
-                {
-                    right = alias ?? member.Name;
+                    right = (alias ?? Consts.GetterPrefix + propertySymbol.Name) + "()";
                 }
                 else
                 {
-                    throw Util.NewSyntaxNotSupportedException(memberAccessExpression);
+                    right = (alias ?? Consts.SetterPrefix + propertySymbol.Name) + "("; // x.Prop = Y; will be compiled to x.set_Prop(Y);
                 }
-
-                break;
+            }
+            else if(methodSymbol != null)
+            {
+                right = alias ?? methodSymbol.Name;
+            }
+            else
+            {
+                throw Util.NewSyntaxNotSupportedException(memberAccessExpression);
             }
 
             exprType = this.semantic.GetTypeInfo(memberAccessExpression.Name);
@@ -603,11 +614,33 @@ namespace HappyCspp.Compiler
         private string ExprInvocationSyntax(InvocationExpressionSyntax invocationExpression, out TypeInfo exprType)
         {
             // E.g. X(y, z)
-            string left = this.ExprSyntax(invocationExpression.Expression, out exprType);
+            Debug.Assert(this.currentParameterListTypes.Count == 0);
+            Debug.Assert(this.currentParameterListTypesDeclaration.Count == 0);
+
+            foreach (var arg in invocationExpression.ArgumentList.Arguments)
+            {
+                // Named argument is not supported
+                if (arg.NameColon != null)
+                {
+                    throw Util.NewSyntaxNotSupportedException(arg);
+                }
+
+                this.currentParameterListTypes.Add(this.semantic.GetTypeInfo(arg));
+            }
+
+            // this.currentParameterListTypesDeclaration should be populated in ExprSyntax
+            string left = this.ExprSyntax(invocationExpression.Expression);
+            string right = this.SyntaxRtArgumentList(invocationExpression.ArgumentList, this.currentParameterListTypesDeclaration);
+
+            // Get the returning type of the invocation
+            exprType = null;
+
+            this.currentParameterListTypes.Clear();
+            this.currentParameterListTypesDeclaration.Clear();
 
             return string.Format("{0}({1})",
                 left,
-                this.SyntaxArgumentList(invocationExpression.ArgumentList));
+                right);
         }
 
         private string ExprObjectCreationSyntax(ObjectCreationExpressionSyntax objectCreationExpression, out TypeInfo exprType)
@@ -619,7 +652,7 @@ namespace HappyCspp.Compiler
             {
                 return string.Format("{0}({1})", // new X(y) ==> X(y)
                     typeWrapper.Wrap(exprType, false),
-                    this.SyntaxArgumentList(objectCreationExpression.ArgumentList));
+                    this.SyntaxRtArgumentList(objectCreationExpression.ArgumentList, this.currentParameterListTypesDeclaration));
             }
             else
             {
@@ -627,7 +660,7 @@ namespace HappyCspp.Compiler
 
                 return string.Format("new{0}({1})", // new X(y) ==> new_<X>(y)
                     type.StartsWith("_<") ? type : "_<" + type.Substring(1) + ">",
-                    this.SyntaxArgumentList(objectCreationExpression.ArgumentList));
+                    this.SyntaxRtArgumentList(objectCreationExpression.ArgumentList, this.currentParameterListTypesDeclaration));
             }
         }
 
@@ -644,7 +677,7 @@ namespace HappyCspp.Compiler
             string obj = this.ExprSyntax(elementAccessExpression.Expression);
 
             exprType = this.semantic.GetTypeInfo(elementAccessExpression);
-            string args = this.SyntaxSeparatedSyntaxList(elementAccessExpression.ArgumentList.Arguments, (s) => this.SyntaxArgument(s));
+            string args = this.SyntaxSeparatedSyntaxList(elementAccessExpression.ArgumentList.Arguments, (s) => this.SyntaxRtArgument(s, default(TypeInfo)));
 
             if (objType.Type.Kind == SymbolKind.ArrayType || Util.IsAttributeDefined(objType.Type.GetAttributes(), "ImportedAttribute"))
             {

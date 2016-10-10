@@ -123,7 +123,7 @@ namespace HappyCspp.Compiler
                     foreach (var attr in attrList.Attributes)
                     {
                         string name = attr.Name.ToString();
-                        if (name == "Alias" || name == "AliasAttribute" || name == "System.Alias" || name == "System.AliasAttribute")
+                        if (name == "Alias" || name == "AliasAttribute")
                         {
                             Util.GetAliases(attr.ArgumentList.Arguments, out this.alias, out this.altAlias);
                         }
