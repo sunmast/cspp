@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace System
+﻿namespace System
 {   
     [Imported]
     public class Array // For C# compilation

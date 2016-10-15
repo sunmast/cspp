@@ -1,7 +1,5 @@
 ﻿namespace System
 {
-    using System.Reflection;
-
     [Imported]
     public struct Void
     {
@@ -180,6 +178,18 @@
     }
 }
 
+namespace System.Runtime.Versioning
+{
+    [Imported]
+    public class TargetFrameworkAttribute : Attribute
+    {
+        public TargetFrameworkAttribute(string targetFrameworkVersion)
+        {
+            
+        }
+    }
+}
+
 namespace System.Runtime.InteropServices
 {
     [Imported]
@@ -211,6 +221,8 @@ namespace System.Collections
     [Imported]
     public interface IEnumerator
     {
+        object Current{get;}
 
+        bool MoveNext();
     }
 }

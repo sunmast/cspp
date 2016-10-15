@@ -1,6 +1,4 @@
-﻿using System;
-
-/// <summary>
+﻿/// <summary>
 /// The integer type defined as "size_t". The type is usually uint for 32bit programs and ulong for 64bit programs.
 /// It's commonly used for array indexing and loop counting.
 /// </summary>

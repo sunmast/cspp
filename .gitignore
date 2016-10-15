@@ -202,5 +202,10 @@ FakesAssemblies/
 # MonoDevelop IDE
 *.userprefs
 
+# Visual Studio Code
+.vscode/
+project.lock.json
+
 # Ignore generated cpp files
 cpp/
+

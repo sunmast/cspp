@@ -633,7 +633,7 @@ namespace HappyCspp.Compiler
             string right = this.SyntaxRtArgumentList(invocationExpression.ArgumentList, this.currentParameterListTypesDeclaration);
 
             // Get the returning type of the invocation
-            exprType = null;
+            //exprType = null;
 
             this.currentParameterListTypes.Clear();
             this.currentParameterListTypesDeclaration.Clear();

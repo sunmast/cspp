@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Xml;
+using Newtonsoft.Json.Linq;
 
 namespace HappyCspp.Compiler
 {
@@ -16,46 +16,28 @@ namespace HappyCspp.Compiler
 
         public string DefaultNamespace { get; private set; }
 
-        public string OutputType { get; private set; }
-
-        public bool IsLibrary
-        {
-            get
-            {
-                return this.OutputType == "Library";
-            }
-        }
+        public bool IsLibrary { get; private set; }
 
         public CsProject(string projectFile)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(projectFile);
-
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(doc.NameTable);
-            nsmgr.AddNamespace("msbuild", "http://schemas.microsoft.com/developer/msbuild/2003");
+            JObject json = JObject.Parse(File.ReadAllText(projectFile));
 
             string dir = Path.GetDirectoryName(projectFile);
 
-            this.Name = doc.SelectSingleNode("//msbuild:AssemblyName", nsmgr).InnerText;
+            this.Name = Path.GetFileName(dir);
 
             // TODO: Load referenced libraries automatically
             this.ReferencedLibraries = this.Name == "corelib"
                 ? new string[]{ }
                 : new string[]{ Path.Combine(dir, "bin", "Debug", "corelib.dll") };
 
-            var nodesCompile = doc.SelectNodes("//msbuild:Compile", nsmgr);
-            this.SourceFiles = new string[nodesCompile.Count];
-
-            for (int i = 0; i < nodesCompile.Count; i++)
-            {
-                this.SourceFiles[i] = Path.Combine(dir, nodesCompile[i].Attributes["Include"].Value.Replace('\\', '/'));
-            }
+            this.SourceFiles = Directory.GetFiles(dir, "*.cs", SearchOption.AllDirectories);
 
             this.DestinationFolder = Path.Combine(dir, "cpp");
 
-            this.DefaultNamespace = doc.SelectSingleNode("//msbuild:RootNamespace", nsmgr).InnerText;
+            this.DefaultNamespace = (string)json["cspp"]["defaultNamespace"];
 
-            this.OutputType = doc.SelectSingleNode("//msbuild:OutputType", nsmgr).InnerText;
+            this.IsLibrary = !(bool)json["buildOptions"]["emitEntryPoint"];
         }
     }
 }

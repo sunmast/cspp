@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace std
+﻿namespace std
 {
     [Imported, Alias("vector")]
     public class Vector<T>

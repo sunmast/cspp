@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace System
+﻿namespace System
 {
     [Imported, Alias("long double")]
     public struct LongDouble

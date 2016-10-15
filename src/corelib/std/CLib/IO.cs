@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace std
+﻿namespace std
 {
     /// <summary>
     /// C library to perform Input/Output operations.

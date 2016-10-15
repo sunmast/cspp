@@ -1217,7 +1217,7 @@ public static class C
     /// <remarks>http://www.cplusplus.com/reference/csignal/ </remarks>
     [Imported, Alias("")]
     public static class Signal
-    { 
+    {
         public delegate void SignalHandler(int param);
 
         /// <summary>
@@ -1283,12 +1283,12 @@ public static class C
         /// <param name="sig">The signal value to raise.</param>
         /// <returns>Returns zero if successful, and a value different from zero otherwise.<returns>
         [Header("csignal"), Alias("raise")]
-        public static extern int Raise (int sig);
+        public static extern int Raise(int sig);
     }
 
     [Imported, Header("csignal"), Alias("sig_atomic_t")]
     public enum SignalAtomic : int
-    {}
+    { }
 
     #endregion // csignal
 
@@ -1311,7 +1311,7 @@ public static class C
         /// </returns>
         /// <param name="path">C string containing the name of the file to be deleted.</param>
         [Header("cstdio"), Alias("remove", "_wremove")]
-        public static extern int RemoveFile (string filename);
+        public static extern int RemoveFile(string filename);
 
         /// <summary>
         /// Changes the name of the file or directory specified by oldname to newname.
@@ -1324,7 +1324,7 @@ public static class C
         /// <param name="oldName">C string containing the name of an existing file to be renamed and/or moved.</param>
         /// <param name="newName">C string containing the new name for the file.</param>
         [Header("cstdio"), Alias("rename", "_wrename")]
-        public static extern int RenameFile (string oldName, string newName);
+        public static extern int RenameFile(string oldName, string newName);
     }
 
     #endregion // cstdio
@@ -1352,7 +1352,7 @@ public static class C
     {
         [Header("cstdlib"), Alias("RAND_MAX")]
         public static readonly int MaxValue;
-        
+
         /// <summary>
         /// Initialize random number generator
         /// </summary>
@@ -1422,7 +1422,7 @@ public static class C
     public static class Environment
     {
         public delegate void ExitHandler();
-        
+
         /// <summary>
         /// Aborts the current process, producing an abnormal program termination.
         /// </summary>

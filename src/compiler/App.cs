@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -32,12 +31,12 @@ namespace HappyCspp.Compiler
                     return 1;
                 }
 
-                string csprojFile = args[0];
+                string projFile = args[0];
                 string configFile = args[1];
 
-                if (!File.Exists(csprojFile))
+                if (!File.Exists(projFile))
                 {
-                    Logger.LogError("Unable to load the C# project file '{0}'!", csprojFile);
+                    Logger.LogError("Unable to load the C# project file '{0}'!", projFile);
                     PrintUsage();
                     return 1;
                 }
@@ -323,7 +322,7 @@ namespace HappyCspp.Compiler
                 }
 
 
-                string cbpFile = Path.ChangeExtension(csprojFile, ".cbp");
+                string cbpFile = Path.ChangeExtension(projFile, ".cbp");
                 if (File.Exists(cbpFile))
                 {
                     generatedFiles.Insert(0, headersFile);
@@ -332,7 +331,7 @@ namespace HappyCspp.Compiler
                     cbp.UpdateSourceFiles(generatedFiles);
                 }
 
-                Logger.LogInfo("C# project {0} is compiled successfully.", csprojFile);
+                Logger.LogInfo("C# project {0} is compiled successfully.", projFile);
 
                 return 0;
             }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Diagnostics;
-using System.Text;
+using System.IO;
 
 namespace HappyCspp.Compiler
 {
@@ -53,7 +53,7 @@ namespace HappyCspp.Compiler
                 " {0}" +
                 string.Concat(config.Libraries.Select(x => " " + x)) +
                 " -o bin/" + config.Name + "/{1}" +
-                (Environment.OSVersion.Platform.ToString().StartsWith("Win") ? ".exe" : "");
+                (Path.DirectorySeparatorChar == '\\' ? ".exe" : "");
 
             this.libLinkCmd =
                 string.Concat(config.LibLinkerOptions.Select(x => " -" + x)) +

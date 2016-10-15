@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "debugType": "portable",
+    "warningsAsErrors": false,
+    "nowarn": [
+      "CS0660", "CS0661", "CS0626", "CS8021"
+    ]
+  },
+  "dependencies": {},
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.Runtime.CoreCLR": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
+      }
+    }
+  }
+}

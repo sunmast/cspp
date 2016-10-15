@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml;
 
@@ -17,7 +18,11 @@ namespace HappyCspp.Compiler
         internal void UpdateSourceFiles(IEnumerable<string> files)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(this.projFile);
+
+            using (FileStream fs = new FileStream(this.projFile, FileMode.Open, FileAccess.Read))
+            {
+                doc.Load(fs);
+            }
 
             XmlElement projNode = doc.DocumentElement["Project"];
 
@@ -45,14 +50,17 @@ namespace HappyCspp.Compiler
             }
 
             // Save XML using CB default indentation style
-            using (XmlTextWriter xtw = new XmlTextWriter(this.projFile, Encoding.UTF8))
+            var xwSettings = new XmlWriterSettings()
             {
-                xtw.Formatting = Formatting.Indented;
-                xtw.IndentChar = '\t';
-                xtw.Indentation = 1;
+                Encoding = new UTF8Encoding(true),
+                Indent = true,
+                IndentChars = "\t"
+            };
 
+            using (FileStream fs = new FileStream(this.projFile, FileMode.Create, FileAccess.Write))
+            using (XmlWriter xtw = XmlWriter.Create(fs, xwSettings))
+            {
                 doc.Save(xtw);
-
                 xtw.WriteRaw(Environment.NewLine);
             }
         }
