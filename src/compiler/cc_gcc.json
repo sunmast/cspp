@@ -1,0 +1,21 @@
+{
+    "name": "Debug.gcc",
+    "preferWideChar": false,
+    "defines": [],
+    "includes": [
+        "../include", "../corelib/cpp"
+    ],
+    "libraries": [
+        "../include/cppformat/cppformat/libcppformat.a"
+    ],
+    "compiler": "g++",
+    "compilerOptions": [
+        "Wall", "fexceptions", "std=c++11", "g"
+    ],
+    "linker": "g++",
+    "linkerOptions": [],
+    "libLinker": "ar",
+    "libLinkerOptions": [
+        "r", "s"
+    ]
+}

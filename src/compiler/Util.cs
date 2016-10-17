@@ -7,6 +7,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace HappyCspp.Compiler
 {
@@ -125,6 +127,40 @@ namespace HappyCspp.Compiler
             }
 
             return false;
+        }
+
+        internal static void RunCommand(string program, string arguments)
+        {
+            Console.WriteLine("{0} {1}", program, arguments);
+
+            Process p = Process.Start(program, arguments);
+            p.WaitForExit();
+
+            if (p.ExitCode != 0)
+            {
+                throw new Exception(string.Format("{0} {1} failed with exit code {2}.", program, arguments, p.ExitCode));
+            }
+        }
+
+        internal static T GetJsonValue<T>(this JObject jObject, params string[] path)
+        {
+            if (path == null || path.Length == 0)
+            {
+                return default(T);
+            }
+
+            JToken jToken = jObject.Root;
+
+            for(int i = 0; i < path.Length - 1; i++)
+            {
+                jToken = jToken[path[i]];
+                if (jToken == null)
+                {
+                    return default(T);
+                }
+            }
+
+            return jToken.Value<T>(path.Last());
         }
     }
 }

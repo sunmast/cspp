@@ -15,8 +15,8 @@ namespace HappyCspp.Compiler
 
         static void PrintUsage()
         {
-            Logger.LogInfo("Syntax: cspp.exe <*.csproj file> <*.config file>");
-            Logger.LogInfo("E.g. cspp.exe test.csproj gcc.config");
+            Logger.LogInfo("Syntax: cspp <project.json file> <compilerConfig.xml file>");
+            Logger.LogInfo("E.g. cspp test/project.json gcc.xml");
         }
 
         static int Main(string[] args)
@@ -31,7 +31,7 @@ namespace HappyCspp.Compiler
                     return 1;
                 }
 
-                string projFile = args[0];
+                string projFile = Path.GetFullPath(args[0]);
                 string configFile = args[1];
 
                 if (!File.Exists(projFile))
@@ -48,13 +48,18 @@ namespace HappyCspp.Compiler
                     return 1;
                 }
 
-                CompilerConfig config = CompilerConfig.Deserialize(configFile);
+                CompilerConfig config = CompilerConfig.Load(configFile);
 
-                CsProject csproj = new CsProject(args[0]);
+                CsProject csproj = new CsProject(projFile);
 
-                if (!Directory.Exists(csproj.DestinationFolder))
+                if (csproj.IsLibrary)
                 {
-                    Directory.CreateDirectory(csproj.DestinationFolder);
+                    Util.RunCommand("dotnet", "build " + csproj.Directory);
+                }
+
+                if (!Directory.Exists(csproj.CppDirectory))
+                {
+                    Directory.CreateDirectory(csproj.CppDirectory);
                 }
 
                 List<SyntaxTree> syntaxTrees = new List<SyntaxTree>();
@@ -146,7 +151,7 @@ namespace HappyCspp.Compiler
                     }
                 }
 
-                string headersFile = csproj.Name + ".h";
+                string headersFile = csproj.TargetName + ".h";
 
                 foreach (var kvp in knownTypes)
                 {
@@ -155,7 +160,7 @@ namespace HappyCspp.Compiler
 
                 List<string> generatedFiles = new List<string>();
 
-                using (FileStream hFileStream = new FileStream(Path.Combine(csproj.DestinationFolder, headersFile), FileMode.Create, FileAccess.Write, FileShare.None))
+                using (FileStream hFileStream = new FileStream(Path.Combine(csproj.CppDirectory, headersFile), FileMode.Create, FileAccess.Write, FileShare.None))
                 using (StreamWriter hWriter = new StreamWriter(hFileStream, Encoding.UTF8))
                 {
                     hWriter.WriteLine("#pragma once");
@@ -267,13 +272,13 @@ namespace HappyCspp.Compiler
                         if (typeModel is ClassModel || typeModel is StructModel)
                         {
                             string fileName = typeModel.FullName.Replace("::", ".") + ".cpp";
-                            if (fileName.StartsWith(csproj.DefaultNamespace))
+                            if (csproj.DefaultNamespace != null && fileName.StartsWith(csproj.DefaultNamespace))
                             {
                                 // Omit default NS on file name
                                 fileName = fileName.Substring(csproj.DefaultNamespace.Length + 1);
                             }
 
-                            string cppFile = Path.Combine(csproj.DestinationFolder, fileName);
+                            string cppFile = Path.Combine(csproj.CppDirectory, fileName);
                             generatedFiles.Add(fileName);
 
                             using (FileStream cppFileStream = new FileStream(cppFile, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -318,7 +323,7 @@ namespace HappyCspp.Compiler
                             throw new NotSupportedException(config.Compiler);
                     }
 
-                    cppCompiler.Compile(csproj.IsLibrary, generatedFiles.ToArray(), csproj.Name);
+                    cppCompiler.Build(csproj, generatedFiles);
                 }
 
 

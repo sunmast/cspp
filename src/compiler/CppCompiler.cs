@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.IO;
@@ -9,73 +10,102 @@ namespace HappyCspp.Compiler
     {
         protected CompilerConfig Config { get; private set; }
 
-        public CppCompiler(CompilerConfig config)
+        protected string[] CppFiles { get; private set; }
+
+        protected string[] ObjFiles { get; private set; }
+
+        protected string TargetFile { get; private set; }
+
+        protected IEnumerable<string> Includes { get; private set; }
+
+        protected IEnumerable<string> Libraries { get; private set; }
+
+        protected CppCompiler(CompilerConfig config)
         {
             this.Config = config;
         }
 
-        public void Compile(bool isLibrary, string[] cppFiles, string outputFile)
+        public void Build(CsProject csproj, IEnumerable<string> cppFiles)
         {
-            string[] objFiles = this.Compile(cppFiles);
-            this.Link(isLibrary, objFiles, outputFile);
-        }
+            this.CppFiles = cppFiles.Select(x => Path.Combine(csproj.CppDirectory, x)).ToArray();
+            this.ObjFiles = cppFiles.Select(x => Path.Combine(csproj.ObjDirectory, this.Config.Name, x) + this.ObjExt).ToArray();
+            this.TargetFile = Path.Combine(csproj.BinDirectory, this.Config.Name, csproj.TargetName) + (csproj.IsLibrary ? this.LibExt : this.ExeExt);
 
-        protected abstract string[] Compile(string[] inputs);
+            this.Includes = this.Config.Includes.Select(x => Path.GetFullPath(Path.Combine(csproj.Directory, x)));
+            this.Libraries = this.Config.Libraries.Select(x => Path.GetFullPath(Path.Combine(csproj.Directory, x)));
 
-        protected abstract void Link(bool isLibrary, string[] objFiles, string outputFile);
+            this.Compile();
 
-        protected void Execute(string program, string arguments)
-        {
-            Console.WriteLine("{0} {1}", program, arguments);
-
-            Process p = Process.Start(program, arguments);
-            p.WaitForExit();
-            if (p.ExitCode != 0)
+            if (csproj.IsLibrary)
             {
-                throw new Exception(string.Format("{0} {1} failed with exit code {2}.", program, arguments, p.ExitCode));
+                this.LinkLib();
+            }
+            else
+            {
+                this.Link();
             }
         }
+
+        protected abstract string ObjExt { get; }
+
+        protected abstract string LibExt { get; }
+
+        protected abstract string ExeExt { get; }
+
+        protected abstract void Compile();
+
+        protected abstract void Link();
+
+        protected abstract void LinkLib();
     }
 
     public class GccCompiler : CppCompiler
     {
-        private string compileCmd, linkCmd, libLinkCmd;
-
         public GccCompiler(CompilerConfig config) : base(config)
         {
-            this.compileCmd =
-                string.Concat(config.CompilerOptions.Select(x => " -" + x)) +
-                string.Concat(config.Includes.Select(x => " -I" + x)) +
-                " -c {0} -o obj/" + config.Name + "/{0}.o";
-
-            this.linkCmd =
-                string.Concat(config.LinkerOptions.Select(x => " " + x)) +
-                " {0}" +
-                string.Concat(config.Libraries.Select(x => " " + x)) +
-                " -o bin/" + config.Name + "/{1}" +
-                (Path.DirectorySeparatorChar == '\\' ? ".exe" : "");
-
-            this.libLinkCmd =
-                string.Concat(config.LibLinkerOptions.Select(x => " -" + x)) +
-                " bin/" + config.Name + "/{1}.a {0}" +
-                string.Concat(config.Libraries.Select(x => " " + x));
         }
 
-        protected override string[] Compile(string[] inputs)
+        protected override string ObjExt { get { return ".o"; } }
+
+        protected override string LibExt { get { return ".a"; } }
+
+        protected override string ExeExt { get { return ""; } }
+
+        protected override void Compile()
         {
-            foreach (string input in inputs)
+            string argsFormat =
+                string.Concat(this.Config.CompilerOptions.Select(x => " -" + x)) +
+                string.Concat(this.Includes.Select(x => " -I" + x)) +
+                " -c {0} -o {1}";
+
+            for (int i = 0; i < this.CppFiles.Length; i++)
             {
-                string cmd = string.Format(this.compileCmd, "cpp/" + input);
-                this.Execute(this.Config.Compiler, cmd);
+                string args = string.Format(argsFormat, this.CppFiles[i], this.ObjFiles[i]);
+                Util.RunCommand(this.Config.Compiler, args);
             }
-
-            return inputs.Select(x => "obj/" + this.Config.Name + "/cpp/" + x + ".o").ToArray();
         }
 
-        protected override void Link(bool isLibrary, string[] objFiles, string outputFile)
+        protected override void Link()
         {
-            string cmd = string.Format(isLibrary ? this.libLinkCmd : this.linkCmd, string.Join(" ", objFiles), outputFile);
-            this.Execute(isLibrary ? this.Config.LibLinker : this.Config.Linker, cmd);
+            string argsFormat =
+                string.Concat(this.Config.LinkerOptions.Select(x => " -" + x)) +
+                " {0}" +
+                string.Concat(this.Libraries.Select(x => " " + x)) +
+                " -o {1}";
+
+            string args = string.Format(argsFormat, string.Join(" ", this.ObjFiles), this.TargetFile);
+            Util.RunCommand(this.Config.Linker, args);
+        }
+
+        protected override void LinkLib()
+        {
+            string argsFormat =
+                string.Concat(this.Config.LibLinkerOptions.Select(x => " -" + x)) +
+                " {1}" + " {0}" +
+                string.Concat(this.Libraries.Select(x => " " + x));
+
+            string args = string.Format(argsFormat, string.Join(" ", this.ObjFiles), this.TargetFile);
+            Util.RunCommand(this.Config.LibLinker, args);
         }
     }
 
@@ -85,13 +115,21 @@ namespace HappyCspp.Compiler
         {
         }
 
-        protected override string[] Compile(string[] inputs)
+        protected override string ObjExt { get { return ".o"; } }
+
+        protected override string LibExt { get { return ".a"; } }
+
+        protected override string ExeExt { get { return ""; } }
+
+        protected override void Compile()
         {
-            return null;
         }
 
-        protected override void Link(bool isLibrary, string[] objFiles, string outputFile)
-        {}
+        protected override void Link()
+        { }
+
+        protected override void LinkLib()
+        { }
     }
 
     public class MsvcCompiler : CppCompiler
@@ -100,12 +138,20 @@ namespace HappyCspp.Compiler
         {
         }
 
-        protected override string[] Compile(string[] inputs)
+        protected override string ObjExt { get { return ".obj"; } }
+
+        protected override string LibExt { get { return ".dll"; } }
+
+        protected override string ExeExt { get { return ".exe"; } }
+
+        protected override void Compile()
         {
-            return null;
         }
 
-        protected override void Link(bool isLibrary, string[] objFiles, string outputFile)
-        {}
+        protected override void Link()
+        { }
+
+        protected override void LinkLib()
+        { }
     }
 }

@@ -6,13 +6,19 @@ namespace HappyCspp.Compiler
 {
     public class CsProject
     {
-        public string Name { get; private set; }
+        public string TargetName { get; private set; }
 
         public string[] ReferencedLibraries { get; private set; }
 
         public string[] SourceFiles { get; private set; }
 
-        public string DestinationFolder { get; private set; }
+        public string Directory {get; private set; }
+
+        public string CppDirectory { get; private set; }
+
+        public string BinDirectory { get; private set; }
+
+        public string ObjDirectory { get; private set; }
 
         public string DefaultNamespace { get; private set; }
 
@@ -22,22 +28,24 @@ namespace HappyCspp.Compiler
         {
             JObject json = JObject.Parse(File.ReadAllText(projectFile));
 
-            string dir = Path.GetDirectoryName(projectFile);
+            this.Directory = Path.GetDirectoryName(projectFile);
 
-            this.Name = Path.GetFileName(dir);
+            this.TargetName = json.GetJsonValue<string>("buildOptions", "outputName") ?? Path.GetFileName(this.Directory);
 
             // TODO: Load referenced libraries automatically
-            this.ReferencedLibraries = this.Name == "corelib"
+            this.ReferencedLibraries = this.TargetName == "corelib"
                 ? new string[]{ }
-                : new string[]{ Path.Combine(dir, "bin", "Debug", "corelib.dll") };
+                : new string[]{ Path.Combine(this.Directory, "bin", "Debug", "corelib.dll") };
 
-            this.SourceFiles = Directory.GetFiles(dir, "*.cs", SearchOption.AllDirectories);
+            this.SourceFiles =  System.IO.Directory.GetFiles(this.Directory, "*.cs", SearchOption.AllDirectories);
 
-            this.DestinationFolder = Path.Combine(dir, "cpp");
+            this.CppDirectory = Path.Combine(this.Directory, "cpp");
+            this.BinDirectory = Path.Combine(this.Directory, "bin");
+            this.ObjDirectory = Path.Combine(this.Directory, "obj");
 
-            this.DefaultNamespace = (string)json["cspp"]["defaultNamespace"];
+            this.DefaultNamespace = json.GetJsonValue<string>("cspp", "defaultNamespace");
 
-            this.IsLibrary = !(bool)json["buildOptions"]["emitEntryPoint"];
+            this.IsLibrary = !json.GetJsonValue<bool>("buildOptions", "emitEntryPoint");
         }
     }
 }
