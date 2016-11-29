@@ -15,8 +15,8 @@ namespace HappyCspp.Compiler
 
         static void PrintUsage()
         {
-            Logger.LogInfo("Syntax: cspp <project.json file> <compilerConfig.xml file>");
-            Logger.LogInfo("E.g. cspp test/project.json gcc.xml");
+            Logger.LogInfo("Syntax: cspp <project.json file> <compilerConfig.json file>");
+            Logger.LogInfo("E.g. cspp test/project.json gcc.json");
         }
 
         static int Main(string[] args)
