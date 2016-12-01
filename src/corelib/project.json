@@ -7,18 +7,17 @@
       "CS0660", "CS0661", "CS0626", "CS8021"
     ]
   },
-  "dependencies": {},
-  "frameworks": {
-    "netcoreapp1.0": {
-      "dependencies": {
-        "Microsoft.NETCore.Runtime.CoreCLR": {
-          "type": "platform",
-          "version": "1.0.1"
-        }
-      }
-    }
+
+  "dependencies": {
+    "Microsoft.NETCore.Runtime.CoreCLR": "*"
   },
+
+  "frameworks": {
+    "netstandard1.6.1": {}
+  },
+  
   "cspp": {
+    "emitEntryPoint": false,
     "defaultNamespace": "System"
   }
 }

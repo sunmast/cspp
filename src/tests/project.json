@@ -2,22 +2,19 @@
   "version": "1.0.0-*",
   "buildOptions": {
     "debugType": "portable",
-    "emitEntryPoint": true
   },
+
   "dependencies": {
-    "corelib": "1.0.0-*"
+    "corelib": "*",
+    "Microsoft.NETCore.Runtime.CoreCLR": "*",
   },
+
   "frameworks": {
-    "netcoreapp1.0": {
-      "dependencies": {
-        "Microsoft.NETCore.Runtime.CoreCLR": {
-          "type": "platform",
-          "version": "1.0.1"
-        }
-      }
-    }
+    "netstandard1.6.1": {}
   },
+
   "cspp": {
+    "emitEntryPoint": false,
     "defaultNamespace": "HappyCspp.Tests"
   }
 }

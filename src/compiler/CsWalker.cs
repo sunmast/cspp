@@ -264,44 +264,5 @@ namespace HappyCspp.Compiler
             this.depth--;
             this.hWriter.WriteLine("}};");
         }
-
-        internal void ResolveMember(IEnumerable<ISymbol> members, IEnumerable<TypeInfo> parameterTypes,
-            out bool isStatic, out string alias,
-            out ITypeSymbol typeSymbol, out IFieldSymbol fieldSymbol, out IPropertySymbol propertySymbol, out IMethodSymbol methodSymbol)
-        {
-            typeSymbol = null;
-            fieldSymbol = null;
-            propertySymbol = null;
-            methodSymbol = null;
-
-            //foreach (var member in members)
-            {
-                var member = members.First();
-                alias = Util.GetSymbolAlias(config.PreferWideChar, member.GetAttributes());
-                isStatic = member.IsStatic;
-
-                // Properties: compile to get_X / set_X
-                // Members with aliases: compiled to alias
-                // Properties with alias: compiled to alias as-is. No get_/set_ prefixes
-                if (member is ITypeSymbol)
-                {
-                    typeSymbol = member as ITypeSymbol;
-                }
-                else if (member is IFieldSymbol)
-                {
-                    fieldSymbol = member as IFieldSymbol;
-                }
-                else if (member is IPropertySymbol)
-                {
-                    propertySymbol = member as IPropertySymbol;
-                }
-                else if (member is IMethodSymbol)
-                {
-                    methodSymbol = member as IMethodSymbol;
-                }
-
-                //break;
-            }
-        }
     }
 }
