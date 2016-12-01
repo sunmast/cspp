@@ -109,17 +109,17 @@ namespace HappyCspp.Compiler
         }
     }
 
-    public class LlvmCompiler : CppCompiler
+    public class MsvcCompiler : CppCompiler
     {
-        public LlvmCompiler(CompilerConfig config) : base(config)
+        public MsvcCompiler(CompilerConfig config) : base(config)
         {
         }
 
-        protected override string ObjExt { get { return ".o"; } }
+        protected override string ObjExt { get { return ".obj"; } }
 
-        protected override string LibExt { get { return ".a"; } }
+        protected override string LibExt { get { return ".dll"; } }
 
-        protected override string ExeExt { get { return ""; } }
+        protected override string ExeExt { get { return ".exe"; } }
 
         protected override void Compile()
         {
@@ -132,17 +132,17 @@ namespace HappyCspp.Compiler
         { }
     }
 
-    public class MsvcCompiler : CppCompiler
+    public class LlvmCompiler : CppCompiler
     {
-        public MsvcCompiler(CompilerConfig config) : base(config)
+        public LlvmCompiler(CompilerConfig config) : base(config)
         {
         }
 
-        protected override string ObjExt { get { return ".obj"; } }
+        protected override string ObjExt { get { return ".o"; } }
 
-        protected override string LibExt { get { return ".dll"; } }
+        protected override string LibExt { get { return ".a"; } }
 
-        protected override string ExeExt { get { return ".exe"; } }
+        protected override string ExeExt { get { return ""; } }
 
         protected override void Compile()
         {

@@ -6,9 +6,11 @@ namespace HappyCspp.Tester
 {
     public class App
     {
+        static readonly bool isWindows = Path.DirectorySeparatorChar == '\\';
+
         static void PrintUsage()
         {
-            Console.WriteLine("Usage: tester abc.cs test_run_folder");        
+            Console.WriteLine("Usage: tester abc.cs test_run_folder cc.json");        
         }
 
         static int RunCommand(string program, string arguments = null)
@@ -28,9 +30,8 @@ namespace HappyCspp.Tester
 
         public static void Main(string[] args)
         {
-            // Assuming each .cs file in ../tests folder is a test case
             // Run tests with:
-            // tester abc.cs test_run_folder
+            // tester abc.cs test_run_folder cc.json
 
             // Implementation
             // 1. Copy abc.cs to test_run_folder/abc
@@ -38,28 +39,43 @@ namespace HappyCspp.Tester
             // 3. Compile abc.cs by cspp test_run_folder/abc/project.json cc_current_platform.json
             // 4. Run the compiled native program and expect exit code 0
 
-            if (args.Length != 2)
+            if (args.Length != 3)
             {
                 PrintUsage();
+                return;
             }
 
             string testCaseFile = args[0];
             string testRunFolder = args[1];
+            string cc = args[2];
 
             if (!File.Exists(testCaseFile))
             {
                 PrintUsage();
+                return;
             }
 
             if (!Directory.Exists(testRunFolder))
             {
                 PrintUsage();
+                return;
+            }
+
+            if (!File.Exists(cc))
+            {
+                PrintUsage();
+                return;
             }
 
             string testCaseName = Path.GetFileNameWithoutExtension(testCaseFile);
             string testCaseFolder = Path.Combine(testRunFolder, testCaseName);
             string testCaseProject = Path.Combine(testCaseFolder, "project.json");
-            string testCaseExecutable = Path.Combine(testCaseFolder, "Debug", testCaseName);
+            string testCaseExecutable = Path.Combine(testCaseFolder, "Debug", testCaseName + (isWindows ? ".exe" : null));
+
+            if (Directory.Exists(testCaseFolder))
+            {
+                Directory.Delete(testCaseFolder, true);
+            }
 
             Directory.CreateDirectory(testCaseFolder);
 
@@ -68,25 +84,28 @@ namespace HappyCspp.Tester
 {
   'version': '1.0.0-*',
   'buildOptions': {
-    'debugType': 'portable',
-    'emitEntryPoint': true
+    'debugType': 'portable'
   },
+
   'dependencies': {
-    'corelib': '1.0.0-*'
+    'Microsoft.NETCore.Runtime.CoreCLR': '*'
   },
+
   'frameworks': {
-    'netcoreapp1.0': {
-      'dependencies': {
-        'Microsoft.NETCore.Runtime.CoreCLR': {
-          'type': 'platform',
-          'version': '1.0.1'
-        }
+    'netstandard1.6.1': {
+      'bin': { 
+          'assembly': '../../../corelib.dll'
       }
     }
-  }
-}".Replace('\'', '"'));
+  },
 
-            RunCommand("cspp", testCaseProject + "cc_gcc.json");
+  'cspp': {
+    'emitEntryPoint': true
+  }
+}
+".Replace('\'', '"'));
+
+            RunCommand("cspp", testCaseProject + " " + cc);
             RunCommand(testCaseExecutable);
         }
     }

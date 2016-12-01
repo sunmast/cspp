@@ -1,12 +1,12 @@
 {
   "version": "1.0.0-*",
   "buildOptions": {
-    "debugType": "portable",
+    "debugType": "portable"
   },
 
   "dependencies": {
     "corelib": "*",
-    "Microsoft.NETCore.Runtime.CoreCLR": "*",
+    "Microsoft.NETCore.Runtime.CoreCLR": "*"
   },
 
   "frameworks": {

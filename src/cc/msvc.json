@@ -1,0 +1,21 @@
+{
+    "name": "Debug.msvc",
+    "preferWideChar": true,
+    "defines": [],
+    "includes": [
+        "../include", "../corelib/cpp"
+    ],
+    "libraries": [
+        "../include/cppformat/cppformat/libcppformat.lib"
+    ],
+    "compiler": "cl.exe",
+    "compilerOptions": [
+        "Wall", "fexceptions", "std=c++11", "g"
+    ],
+    "linker": "link.exe",
+    "linkerOptions": [],
+    "libLinker": "link.exe",
+    "libLinkerOptions": [
+        "r", "s"
+    ]
+}

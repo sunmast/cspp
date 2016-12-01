@@ -8,7 +8,7 @@
   "dependencies": {
     "NETStandard.Library": "*",
     "Microsoft.NETCore.Runtime.CoreCLR": "*",
-    "System.Diagnostics.Process": "*",
+    "System.Diagnostics.Process": "*"
   },
 
   "frameworks": {
@@ -16,8 +16,8 @@
   },
 
   "runtimes": {
+    "ubuntu.16.04-x64": {},
     "win10-x64": {},
-    "ubuntu.14.04-x64": {},
-    "ubuntu.16.04-x64": {}
+    "osx.10.12-x64": {}
   }
 }

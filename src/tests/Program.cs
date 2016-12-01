@@ -8,11 +8,6 @@
 
         static TestDelegate Test;
 
-        static void Main()
-        {
-            // Need to tune C# compiler to support Main function with cstring[] instead of string[]
-        }
-
         public static int Run(cstring[] args)
         {
             fmt.Print("CS++ Test Suite v0.1\n");

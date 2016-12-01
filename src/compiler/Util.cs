@@ -153,7 +153,7 @@ namespace HappyCspp.Compiler
 
             for(int i = 0; i < path.Length - 1; i++)
             {
-                jToken = jToken[path[i]];
+                jToken = string.IsNullOrEmpty(path[i]) ? jToken.First() : jToken[path[i]];
                 if (jToken == null)
                 {
                     return default(T);
@@ -161,6 +161,27 @@ namespace HappyCspp.Compiler
             }
 
             return jToken.Value<T>(path.Last());
+        }
+
+        internal static IEnumerable<T> GetJsonValues<T>(this JObject jObject, params string[] path)
+        {
+            if (path == null || path.Length == 0)
+            {
+                return null;
+            }
+
+            JToken jToken = jObject.Root;
+
+            for(int i = 0; i < path.Length - 1; i++)
+            {
+                jToken = string.IsNullOrEmpty(path[i]) ? jToken.First() : jToken[path[i]];
+                if (jToken == null)
+                {
+                    return null;
+                }
+            }
+
+            return jToken.Values<T>(path.Last());
         }
     }
 }

@@ -15,7 +15,7 @@ namespace HappyCspp.Compiler
 
         static void PrintUsage()
         {
-            Logger.LogInfo("Syntax: cspp <project.json file> <compilerConfig.json file>");
+            Logger.LogInfo("Usage: cspp <project.json file> <compilerConfig.json file>");
             Logger.LogInfo("E.g. cspp test/project.json gcc.json");
         }
 
@@ -54,6 +54,7 @@ namespace HappyCspp.Compiler
 
                 if (csproj.IsLibrary)
                 {
+                    Util.RunCommand("dotnet", "restore " + csproj.Directory);
                     Util.RunCommand("dotnet", "build " + csproj.Directory);
                 }
 
@@ -316,7 +317,7 @@ namespace HappyCspp.Compiler
                         case "llvm":
                             cppCompiler = new LlvmCompiler(config);
                             break;
-                        case "cl":
+                        case "cl.exe":
                             cppCompiler = new MsvcCompiler(config);
                             break;
                         default:

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -35,7 +36,7 @@ namespace HappyCspp.Compiler
             // TODO: Load referenced libraries automatically
             this.ReferencedLibraries = this.TargetName == "corelib"
                 ? new string[]{ }
-                : new string[]{ Path.Combine(this.Directory, "bin", "Debug", "corelib.dll") };
+                : new string[]{ Path.Combine(this.Directory, json.GetJsonValue<string>("frameworks", "netstandard1.6.1", "bin", "assembly")) };
 
             this.SourceFiles =  System.IO.Directory.GetFiles(this.Directory, "*.cs", SearchOption.AllDirectories);
 
@@ -45,7 +46,7 @@ namespace HappyCspp.Compiler
 
             this.DefaultNamespace = json.GetJsonValue<string>("cspp", "defaultNamespace");
 
-            this.IsLibrary = !json.GetJsonValue<bool>("buildOptions", "emitEntryPoint");
+            this.IsLibrary = !json.GetJsonValue<bool>("cspp", "emitEntryPoint");
         }
     }
 }

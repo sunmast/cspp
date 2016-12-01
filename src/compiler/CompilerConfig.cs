@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace HappyCspp.Compiler
 {
@@ -34,8 +33,14 @@ namespace HappyCspp.Compiler
         public static CompilerConfig Load(string configFile)
         {
             string json = File.ReadAllText(configFile);
+            CompilerConfig cc = JsonConvert.DeserializeObject<CompilerConfig>(json);
 
-            return JsonConvert.DeserializeObject<CompilerConfig>(json);
+            if (cc.Name == null || cc.Compiler == null || cc.Linker == null)
+            {
+                throw new InvalidDataException(string.Format("The compiler config {0} is not valid.", configFile));
+            }
+
+            return cc;
         }
     }
 }
