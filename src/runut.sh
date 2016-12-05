@@ -17,7 +17,7 @@ elif [[ $uname =~ ^MINGW* ]]
 then
   platform="win10-x64"
   compiler="msvc"
-elif [[ $uname =~ ^Mac* ]]
+elif [[ $uname =~ ^Darwin* ]]
 then
   platform="osx.10.12-x64"
   compiler="llvm"
