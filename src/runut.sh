@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # Run this in Ubuntu, Windows, or macOS with dotnet utilities installed
 # Install dotnet utilities from: https://www.microsoft.com/net/core
@@ -11,22 +11,22 @@ uname=$(uname)
 
 if [[ $uname =~ ^Linux* ]]
 then
-  plat="ubuntu.16.04-x64"
-  cc="gcc"
+  platform="ubuntu.16.04-x64"
+  compiler="gcc"
 elif [[ $uname =~ ^MINGW* ]]
 then
-  plat="win10-x64"
-  cc="msvc"
+  platform="win10-x64"
+  compiler="msvc"
 elif [[ $uname =~ ^Mac* ]]
 then
-  plat="osx.10.12-x64"
-  cc="llvm"
+  platform="osx.10.12-x64"
+  compiler="llvm"
 else
   echo "Unable to determine the current platform"
   exit 1
 fi
 
-echo "Platform=$plat CC=$cc.json"
+echo "Platform=$platform compiler=$compiler.json"
 
 if [ $1 ]
 then
@@ -35,9 +35,9 @@ else
   tclist=$(ls tests/*.cs)
 fi
 
-if [ ! -e ../out/$plat/ut ]
+if [ ! -e ../out/$platform/ut ]
 then
-  mkdir ../out/$plat/ut
+  mkdir ../out/$platform/ut
 fi
 
 for tc in $tclist
@@ -45,5 +45,5 @@ do
   echo ""
   echo "Test case $tc"
   
-  ../out/$plat/tester $tc ../out/$plat/ut ../out/$cc.json
+  ../out/$platform/tester $tc ../out/$platform/ut ../out/$compiler.json
 done

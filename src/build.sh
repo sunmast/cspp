@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # Run this in Ubuntu, Windows, or macOS with dotnet utilities installed
 # Install dotnet utilities from: https://www.microsoft.com/net/core
